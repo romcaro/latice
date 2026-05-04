@@ -16,5 +16,9 @@ public class Tile {
 	public boolean matchesColor(Tile t) {
 		return false;
 	}
+	
+	public boolean matchesShape(Tile t) {
+		return false;
+	}
 
 }	
