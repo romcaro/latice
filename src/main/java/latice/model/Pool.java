@@ -37,16 +37,14 @@ public class Pool {
 	}
 	
 	public boolean isEmpty() {
-		return tiles.size() == 0;
-	}
+		return tiles.isEmpty();
+	}		
 	
 	public Pool[] splitIntoTwoPools() {
 		int halfSize = tiles.size() / 2;
-		List<Tile> pool1 = tiles.subList(0, halfSize);
-		List<Tile> pool2 = tiles.subList(halfSize, tiles.size());
-		Pool p1 = new Pool(pool1);
-		Pool p2 = new Pool(pool2);
-		return new Pool[] {p1, p2};
+		List<Tile> poolPlayer1 = new ArrayList<>(tiles.subList(0, halfSize));
+		List<Tile> poolPlayer2 = new ArrayList<>(tiles.subList(halfSize, tiles.size()));
+		return new Pool[] {new Pool(poolPlayer1), new Pool(poolPlayer2)};
 	}
 	
 }

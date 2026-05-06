@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import latice.model.Pool;
+import latice.model.Rack;
 import latice.model.Tile;
 
 public class LaticeTestCases {
@@ -13,7 +14,6 @@ public class LaticeTestCases {
 		List<Tile> tiles = new ArrayList<Tile>();
 		
 		Pool pool = new Pool(tiles);
-		Pool EmptyPool;
 		List<Tile> FilledPool;
 		pool.generatePool();
 		FilledPool = pool.shuffle();
@@ -23,21 +23,21 @@ public class LaticeTestCases {
 		}
 		
 		
-		Pool PlayerOnePool = pool.splitIntoTwoPools()[0];
-		List<Tile> PlayerOneTiles;
-		PlayerOneTiles = PlayerOnePool.shuffle();
-		for (Tile tile : PlayerOneTiles) {
-			System.out.println(tile.getShape()+ " " + tile.getColor());
-		}
-		
-		 Pool PlayerTwoPool = pool.splitIntoTwoPools()[1];
-		 List<Tile> PlayerTwoTiles;
-		 PlayerTwoTiles = PlayerTwoPool.shuffle();
-		 for (Tile tile : PlayerTwoTiles) {
-				System.out.println(tile.getShape()+ " " + tile.getColor());
-			}
+		Pool[] mainPool = pool.splitIntoTwoPools();
+		Pool playerOnePool = mainPool[0];
+		Pool playerTwoPool = mainPool[1];
+				 
+		System.out.println("\nDone. Player One Pool size : " + playerOnePool.size() + " | Player Two Pool size : " + playerTwoPool.size());
 		 
-		 System.out.println("Player One Pool size: " + PlayerOnePool.size());
-		 System.out.println("Player Two Pool size: " + PlayerOnePool.size());
+		Rack rackPlayerOne = new Rack();
+		Rack rackPlayerTwo = new Rack();
+		 
+		rackPlayerOne.fillRack(playerOnePool);
+		rackPlayerTwo.fillRack(playerTwoPool);
+		
+		System.out.println("\n-------------  Player 1  -------------\n");
+		rackPlayerOne.getRack();
+		System.out.println("\n-------------  Player 2  -------------\n");
+		rackPlayerTwo.getRack();
 	}
 }

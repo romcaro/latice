@@ -30,7 +30,7 @@ public class Rack {
 	
 	public void getRack() {
 		for (Tile tile : tiles) {
-			System.out.println(tile);
+			System.out.println(tile.getShape() + " " +tile.getColor());
 		}
 	}
 	
