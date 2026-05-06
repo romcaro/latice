@@ -1,26 +1,35 @@
 package latice.model;
 
+import java.util.Collections;
 import java.util.List;
 
-public class Pool extends Tile {
+public class Pool {
 	
 	private List<Tile> tiles;
 	
 	
-	public List<Tile> shuffle() {
-		return tiles; //TODO shuffle method
+	public Pool(List<Tile> tiles) {
+		this.tiles = tiles;
+	}
+	
+	public List<Tile> generatePool() {
+		
+	}
+	
+	public void shuffle() {
+		Collections.shuffle(tiles);
 	}
 	
 	public Tile draw() {
-		//TODO draw method 
+		return tiles.getFirst();
 	}
 	
 	public int size() {
-		return 0; //TODO size method
+		return tiles.size();
 	}
 	
 	public boolean isEmpty() {
-		//TODO isEmpty method
+		return tiles.size() == 0;
 	}
 	
 	
