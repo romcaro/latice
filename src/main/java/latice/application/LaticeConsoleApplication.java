@@ -10,8 +10,10 @@ public class LaticeConsoleApplication {
 		System.out.println("--  développé par Oscar				     --");
 		System.out.println("--  et par Théo	et Roman			     --");
 		System.out.println(barre);
-
+		
+	
 	}
+	
 	
 	
 }
