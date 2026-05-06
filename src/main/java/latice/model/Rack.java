@@ -33,5 +33,11 @@ public class Rack {
 			System.out.println(tile);
 		}
 	}
+	
+	public void fillRack(Pool pool) {
+		while (this.size() < maxSize && !pool.isEmpty()) {
+			this.addTile(pool.draw());
+		}
+	}
 
 }
