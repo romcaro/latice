@@ -22,5 +22,22 @@ public class LaticeTestCases {
 			System.out.println(tile.getShape()+ " " + tile.getColor());
 		}
 		
+		
+		Pool PlayerOnePool = pool.splitIntoTwoPools()[0];
+		List<Tile> PlayerOneTiles;
+		PlayerOneTiles = PlayerOnePool.shuffle();
+		for (Tile tile : PlayerOneTiles) {
+			System.out.println(tile.getShape()+ " " + tile.getColor());
+		}
+		
+		 Pool PlayerTwoPool = pool.splitIntoTwoPools()[1];
+		 List<Tile> PlayerTwoTiles;
+		 PlayerTwoTiles = PlayerTwoPool.shuffle();
+		 for (Tile tile : PlayerTwoTiles) {
+				System.out.println(tile.getShape()+ " " + tile.getColor());
+			}
+		 
+		 System.out.println("Player One Pool size: " + PlayerOnePool.size());
+		 System.out.println("Player Two Pool size: " + PlayerOnePool.size());
 	}
 }
