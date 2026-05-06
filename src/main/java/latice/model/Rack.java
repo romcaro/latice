@@ -1,14 +1,15 @@
 package latice.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Rack {
 	
-	private List<Tile> tiles;
-	private int maxSize = 5;
+	private List<Tile> tiles = new ArrayList<Tile>();
+	private static final int maxSize = 5;
 	
 	public void addTile(Tile tile) {
-		if (this.size() > maxSize) {
+		if (this.size() >= maxSize) {
 			System.out.println("Rack full");
 		} else {
 		tiles.add(tile);
@@ -25,6 +26,12 @@ public class Rack {
 	
 	public int size() {
 		return tiles.size();
+	}
+	
+	public void getRack() {
+		for (Tile tile : tiles) {
+			System.out.println(tile);
+		}
 	}
 
 }
