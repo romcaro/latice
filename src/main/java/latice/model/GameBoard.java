@@ -14,12 +14,16 @@ public class GameBoard {
 
                 Position position = new Position(x, y);
 
-                squares.put(position, new Square(position, null));
+                squares.put(position, new Square(position));
             }
         }
     }
 
     public Square getSquare(int x, int y) {
         return squares.get(new Position(x, y));
+    }
+    
+    public Square setSquare(int x, int y, Square square) {
+    	return squares.put(new Position(x, y) ,square);
     }
 }

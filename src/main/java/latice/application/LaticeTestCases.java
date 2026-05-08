@@ -44,13 +44,23 @@ public class LaticeTestCases {
 		rackPlayerOne.getRack();
 		System.out.println("\n-------------  Player 2  -------------\n");
 		rackPlayerTwo.getRack();
+		System.out.println();
 		
 		GameBoard gameboard = new GameBoard(9,9);
 		
 		Tile tileee = new Tile(Color.GREEN,Shape.GECKO); 
+		Square moon = new Square(new Position(5,5));
+		moon.setMoonSquare();
+		gameboard.setSquare(5, 5, moon);
 		gameboard.getSquare(5, 5).setTile(tileee);
 		
-		System.out.println(gameboard.getSquare(5, 5).toString());
+		for (int i=0;i<9;i++) {
+			for (int y=0;y<9;y++) {
+				System.out.print(gameboard.getSquare(i, y).toString() + " ");
+			}
+			System.out.println();
+		}
+		
 		
 	}
 }

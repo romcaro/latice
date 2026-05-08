@@ -4,9 +4,12 @@ public class Square {
 	
 	private Position position;
     private Tile tile;
+    private boolean isSunSquare = false;
+    private boolean isMoonSquare = false;
+    
 
 
-    public Square(Position position, Tile tile) {
+    public Square(Position position) {
         this.position = position;
         this.tile = null;
     }
@@ -27,10 +30,24 @@ public class Square {
     	return tile != null;
     }
 
+	public void setSunSquare() {
+		isSunSquare = true;
+	}
+	public void setMoonSquare() {
+		isMoonSquare = true;
+	}
+
 	@Override
 	public String toString() {
-		return "[" + tile.getShape() + "-" + tile.getColor() + "]";
-    }
-    
-    
+		if (tile == null) {
+			return "[ - ]";
+		} else if (isSunSquare) {
+			return "[SUN]";
+		} else if (isMoonSquare) {
+			return "[MOON]";
+		} else {
+			return "[" + tile.getShape() + "-" + tile.getColor() + "]";
+		}
+	}
 }
+
