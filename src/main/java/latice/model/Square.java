@@ -1,10 +1,10 @@
 package latice.model;
 
-public class Cell {
+public class Square {
 
     private Position position;
 
-    public Cell(Position position) {
+    public Square(Position position) {
         this.position = position;
     }
 

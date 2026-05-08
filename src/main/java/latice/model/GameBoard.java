@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class GameBoard {
 	
-	private Map<Position, Cell> cells = new HashMap<>();
+	private Map<Position, Square> squares = new HashMap<>();
 
     public GameBoard(int width, int height) {
 
@@ -14,12 +14,12 @@ public class GameBoard {
 
                 Position position = new Position(x, y);
 
-                cells.put(position, new Cell(position));
+                squares.put(position, new Square(position));
             }
         }
     }
 
-    public Cell getCase(int x, int y) {
-        return cells.get(new Position(x, y));
+    public Square getCase(int x, int y) {
+        return squares.get(new Position(x, y));
     }
 }
