@@ -3,8 +3,13 @@ package latice.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import latice.model.Color;
+import latice.model.GameBoard;
 import latice.model.Pool;
+import latice.model.Position;
 import latice.model.Rack;
+import latice.model.Shape;
+import latice.model.Square;
 import latice.model.Tile;
 
 public class LaticeTestCases {
@@ -39,5 +44,13 @@ public class LaticeTestCases {
 		rackPlayerOne.getRack();
 		System.out.println("\n-------------  Player 2  -------------\n");
 		rackPlayerTwo.getRack();
+		
+		GameBoard gameboard = new GameBoard(9,9);
+		
+		Tile tileee = new Tile(Color.GREEN,Shape.GECKO); 
+		gameboard.getSquare(5, 5).setTile(tileee);
+		
+		System.out.println(gameboard.getSquare(5, 5).toString());
+		
 	}
 }

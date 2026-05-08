@@ -14,12 +14,12 @@ public class GameBoard {
 
                 Position position = new Position(x, y);
 
-                squares.put(position, new Square(position));
+                squares.put(position, new Square(position, null));
             }
         }
     }
 
-    public Square getCase(int x, int y) {
+    public Square getSquare(int x, int y) {
         return squares.get(new Position(x, y));
     }
 }
