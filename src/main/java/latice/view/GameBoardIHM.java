@@ -1,6 +1,6 @@
 package latice.view;
 
-import Application;
+import javafx.application.Application;
 
 public class GameBoardIHM extends Application {
 

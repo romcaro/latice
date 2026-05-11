@@ -80,7 +80,7 @@ public class LaticeTestCases {
 		
 		//bottom right
 		gameboard.setSquare(8,8,sun);
-		gameboard.setSquare(7,7,sun);
+		gameboard.setSquare(7,7,sun); 
 		gameboard.setSquare(6,6,sun);
 		
 		//bottom left

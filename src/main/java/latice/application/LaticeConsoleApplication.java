@@ -47,6 +47,5 @@ public class LaticeConsoleApplication {
 		rackPlayerOne.getRack();
 		System.out.println("\n-------------  Player 2  -------------\n");
 		rackPlayerTwo.getRack();
-		
     }
 }

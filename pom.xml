@@ -20,7 +20,13 @@
 			<version>5.8.2</version>
 			<scope>test</scope>
 		</dependency>
+		  <dependency>
+    			<groupId>org.openjfx</groupId>
+    			<artifactId>javafx-controls</artifactId>
+    			<version>11</version>
+ 		 </dependency>
 	</dependencies>
+	
 
 	<build>
 		<plugins>
@@ -29,6 +35,15 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.22.2</version>
 			</plugin>
+			    <plugin>
+        			<groupId>org.openjfx</groupId>
+        			<artifactId>javafx-maven-plugin</artifactId>
+        			<version>0.0.8</version>
+        			<configuration>
+            		<mainClass>latice.application.LaticeApplication</mainClass>
+        			</configuration>
+    			</plugin>
 		</plugins>
 	</build>
 </project>
+
