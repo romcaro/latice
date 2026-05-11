@@ -1,6 +1,7 @@
 package latice.view;
 
 import javafx.application.Application;
+import javafx.stage.Stage;
 
 public class GameBoardIHM extends Application {
 
@@ -8,5 +9,12 @@ public class GameBoardIHM extends Application {
 		// TODO Auto-generated method stub
 
 	}
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 }
