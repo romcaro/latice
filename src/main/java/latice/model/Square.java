@@ -44,7 +44,7 @@ public class Square {
 		} else if (isSunSquare) {
 			return "[SUN]";
 		} else if (isMoonSquare) {
-			return "[MOON]";
+			return "[MON]";
 		} else {
 			return "[" + tile.getShape() + "-" + tile.getColor() + "]";
 		}
