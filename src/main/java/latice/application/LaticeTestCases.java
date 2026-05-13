@@ -19,11 +19,11 @@ public class LaticeTestCases {
 		List<Tile> tiles = new ArrayList<Tile>();
 		
 		Pool pool = new Pool(tiles);
-		List<Tile> FilledPool;
+		List<Tile> filledPool;
 		pool.generatePool();
-		FilledPool = pool.shuffle();
+		filledPool = pool.shuffle();
 		
-		for (Tile tile : FilledPool) {
+		for (Tile tile : filledPool) {
 			System.out.println(tile.getShape()+ " " + tile.getColor());
 		}
 		
@@ -37,13 +37,13 @@ public class LaticeTestCases {
 		Rack rackPlayerOne = new Rack();
 		Rack rackPlayerTwo = new Rack();
 		 
-		rackPlayerOne.fillRack(playerOnePool);
-		rackPlayerTwo.fillRack(playerTwoPool);
+		playerOnePool.fillRack(rackPlayerOne);
+		playerTwoPool.fillRack(rackPlayerTwo);
 		
 		System.out.println("\n-------------  Player 1  -------------\n");
-		rackPlayerOne.getRack();
+		rackPlayerOne.toString();
 		System.out.println("\n-------------  Player 2  -------------\n");
-		rackPlayerTwo.getRack();
+		rackPlayerTwo.toString();
 		System.out.println();
 		
 		GameBoard gameboard = new GameBoard(9,9);

@@ -38,6 +38,7 @@ public class Square {
 	}
 
 	@Override
+	//pas ouf faut modifier 
 	public String toString() {
 		if (tile == null) {
 			return "[ - ]";
