@@ -26,14 +26,14 @@ public class LaticeTestCases {
 		playerTwoPool.fillRack(rackPlayerTwo);
 		
 		System.out.println("\n-------------  Player 1  -------------\n");
-		rackPlayerOne.toString();
+		System.out.println(rackPlayerOne);
 		System.out.println("\n-------------  Player 2  -------------\n");
-		rackPlayerTwo.toString();
+		System.out.println(rackPlayerTwo);
 		System.out.println();
 		
 		GameBoard gameboard = new GameBoard(9,9);
 		gameboard.initSpecialSquares();
-	    System.out.println("\\n-------------  Plateau  -------------\n");
+	    System.out.println("\n-------------  Plateau  -------------\n");
 	    System.out.println(gameboard);
 		
 	}
