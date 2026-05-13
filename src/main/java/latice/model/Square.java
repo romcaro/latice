@@ -4,10 +4,7 @@ public class Square {
 	
 	private Position position;
     private Tile tile;
-    private boolean isSunSquare = false;
-    private boolean isMoonSquare = false;
-    
-
+    private SquareType type = SquareType.NORMAL;
 
     public Square(Position position) {
         this.position = position;
@@ -29,26 +26,25 @@ public class Square {
     public boolean isOccupied() { 
     	return tile != null;
     }
-
-	public void setSunSquare() {
-		isSunSquare = true;
+	
+	public void setType(SquareType type) {
+	    this.type = type;
 	}
-	public void setMoonSquare() {
-		isMoonSquare = true;
+	
+	public SquareType getType() {
+	    return type;
 	}
-
+	
 	@Override
-	//pas ouf faut modifier 
 	public String toString() {
-		if (tile == null) {
-			return "[ - ]";
-		} else if (isSunSquare) {
-			return "[SUN]";
-		} else if (isMoonSquare) {
-			return "[MON]";
-		} else {
-			return "[" + tile.getShape() + "-" + tile.getColor() + "]";
-		}
+	    if (isOccupied()) {
+	        return "[" + tile.getShape() + "-" + tile.getColor() + "]";
+	    }
+	    return switch (type) {
+	        case SUN  -> "[SUN]";
+	        case MOON -> "[MON]";
+	        default   -> "[ - ]";
+	    };
 	}
 }
 

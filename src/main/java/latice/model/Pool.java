@@ -6,27 +6,34 @@ import java.util.List;
 
 public class Pool {
 	
-	private List<Tile> tiles = new ArrayList<Tile>();
-	private static final int MAX_SIZE = 5;
+	private List<Tile> tiles;
 	
 	
-	public Pool(List<Tile> tiles) {
-		this.tiles = tiles;
+	public Pool() {
+		this.tiles = new ArrayList<>();
 	}
 	
-	public List<Tile> generatePool() {
+	private Pool(List<Tile> tiles) {
+	    this.tiles = tiles;
+	}
+	
+	public List<Tile> getTiles() {
+	    return tiles;
+	}
+	
+	public void generatePool() {
+		if (!tiles.isEmpty())
+	        return;
 		for (Shape shape : Shape.values()) {
 			for (Color color : Color.values()) {
 				tiles.add(new Tile(color, shape));
 			}
 		}
-		tiles.addAll(tiles);
-		return tiles;
+		tiles.addAll(new ArrayList<>(tiles));
 	}
 	
-	public List<Tile> shuffle() {
+	public void shuffle() {
 		Collections.shuffle(tiles);
-		return tiles;
 	}
 	
 	public Tile draw() {
@@ -48,10 +55,10 @@ public class Pool {
 		return new Pool[] {new Pool(poolPlayer1), new Pool(poolPlayer2)};
 	}
 	
-	public boolean fillRack(Rack rack) {
-		while (rack.size() < MAX_SIZE && !this.isEmpty()) {
-			rack.addTile(this.draw());
-		}
-		return false;
+	
+	public void fillRack(Rack rack) {
+	    while (!rack.isFull() && !this.isEmpty()) {
+	        rack.addTile(this.draw());
+	    }
 	}
 }
