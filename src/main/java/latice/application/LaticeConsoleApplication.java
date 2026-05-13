@@ -22,8 +22,10 @@ public class LaticeConsoleApplication {
 		Rack rackPlayerOne = new Rack();
 		Rack rackPlayerTwo = new Rack();
 		 
+
 		playerOnePool.fillRack(rackPlayerOne);
 		playerTwoPool.fillRack(rackPlayerTwo);
+
 		
 		System.out.println("\n-------------  Player 1  -------------\n");
 		rackPlayerOne.toString();
