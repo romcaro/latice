@@ -12,7 +12,7 @@ public class GameBoardFX extends Application {
 		launch(args);
 
 	}
-
+ 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
@@ -26,6 +26,4 @@ public class GameBoardFX extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
     }
-
-
 }
