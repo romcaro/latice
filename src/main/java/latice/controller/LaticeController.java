@@ -4,8 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import latice.model.Color;
 import latice.model.GameBoard;
+import latice.model.Pool;
+import latice.model.Rack;
 import latice.model.Square;
 import latice.model.Tile;
 
@@ -13,8 +16,12 @@ public class LaticeController {
 
     @FXML
     private GridPane gridPane;
+    
+    @FXML
+    private HBox idRackBox;
 
     private GameBoard gameBoard;
+    private Rack rack;
 
     private static final int TILE_SIZE = 80;
 
@@ -22,9 +29,31 @@ public class LaticeController {
     public void initialize() {
         gameBoard = new GameBoard(9, 9);
         gameBoard.initSpecialSquares(); //initialisation des cases spéciales
-        setImageView(gridPane, 9, 9); //
-    }
+        setImageView(gridPane, 9, 9);
+        
+        // Initialisation de la pioche et du rack
+        Pool pool = new Pool();
+        pool.generatePool();
+        pool.shuffle();
 
+        rack = new Rack();
+        pool.fillRack(rack);
+
+        // affichage du rack
+        displayRack();
+    }
+    
+    
+    private void displayRack() {
+        idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
+
+        for (Tile tile : rack.getRack()) {
+            ImageView tileView = new ImageView(getImageForTile(tile));
+            tileView.setFitWidth(TILE_SIZE);
+            tileView.setFitHeight(TILE_SIZE);
+            idRackBox.getChildren().add(tileView);
+        }
+    }
     //Retourne l'image de fond d'une case selon son type (SEA, SUN, MOON)
     private Image getImageForSquare(Square square) {
         return switch (square.getType()) {
