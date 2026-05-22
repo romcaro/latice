@@ -2,6 +2,7 @@ package latice.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import latice.model.Color;
 import latice.model.GameBoard;
@@ -53,5 +54,29 @@ public class LaticeController {
             case YELLOW  -> "y";
         };
     }
+    
+    private void setImageView(GridPane gridPane, int width, int height) {
+        for (int row = 0; row < height; row++) {
+            for (int col = 0; col < width; col++) {
 
+                Square square = gameBoard.getSquare(col, row);
+
+                // Image de fond de la case (normal / soleil / lune)
+                ImageView bgView = new ImageView(getImageForSquare(square));
+                bgView.setFitWidth(TILE_SIZE);
+                bgView.setFitHeight(TILE_SIZE);
+
+                // Si la case contient une tuile, on superpose son image
+                if (square.isOccupied()) {
+                    ImageView tileView = new ImageView(getImageForTile(square.getTile()));
+                    tileView.setFitWidth(TILE_SIZE);
+                    tileView.setFitHeight(TILE_SIZE);
+                    // Plus tard, on pourra utiliser un StackPane pour superposer bg + tuile
+                }
+
+                gridPane.add(bgView, col, row);
+            }
+        }
+
+    }
 }
