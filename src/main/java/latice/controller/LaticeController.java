@@ -3,8 +3,10 @@ package latice.controller;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
+import latice.model.Color;
 import latice.model.GameBoard;
 import latice.model.Square;
+import latice.model.Tile;
 
 public class LaticeController {
 
@@ -33,4 +35,23 @@ public class LaticeController {
     private Image loadImage(String path) {
         return new Image(getClass().getResource(path).toExternalForm());
     }
+    
+    private Image getImageForTile(Tile tile) {
+        String shapeName = tile.getShape().name().toLowerCase();
+        String colorLetter = getColorLetter(tile.getColor());      
+        String path = "/latice/assets/" + shapeName + "_" + colorLetter + ".png";
+        return loadImage(path);
+    }
+
+    private String getColorLetter(Color color) {
+        return switch (color) {
+            case GREEN   -> "g";
+            case MAGENTA -> "m";
+            case NAVY    -> "n";
+            case RED     -> "r";
+            case TEAL    -> "t";
+            case YELLOW  -> "y";
+        };
+    }
+
 }
