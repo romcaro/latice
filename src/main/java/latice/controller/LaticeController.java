@@ -21,7 +21,8 @@ public class LaticeController {
     @FXML
     public void initialize() {
         gameBoard = new GameBoard(9, 9);
-        gameBoard.initSpecialSquares(); //initialisation des cases spéciales 
+        gameBoard.initSpecialSquares(); //initialisation des cases spéciales
+        setImageView(gridPane, 9, 9); //
     }
 
     //Retourne l'image de fond d'une case selon son type (SEA, SUN, MOON)
