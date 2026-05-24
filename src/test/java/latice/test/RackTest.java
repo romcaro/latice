@@ -101,4 +101,9 @@ class RackTest {
         assertTrue(rack.isFull());
     }
 
+    @Test
+    void shouldBeEmptyWhenCreated() {
+        // Assert
+        assertTrue(rack.isEmpty());
+    }
 }
