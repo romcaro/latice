@@ -60,4 +60,17 @@ class RackTest {
         // Assert
         assertEquals(5, rack.size());
     }
+    
+    @Test
+    void shouldRemoveTileWhenPresent() {
+        // Arrange
+        Tile tile = new Tile(Color.GREEN, Shape.BIRD);
+        rack.addTile(tile);
+
+        //Act
+        boolean result = rack.removeTile(tile);
+
+        //Assert
+        assertTrue(result);
+    }
 }
