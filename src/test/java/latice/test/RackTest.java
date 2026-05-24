@@ -119,4 +119,17 @@ class RackTest {
         // Assert
         assertTrue(rack.isEmpty());
     }
+    
+    @Test
+    void shouldFillRackToFiveFromPool() {
+        // Arrange
+        Pool pool = new Pool();
+        pool.generatePool();
+
+        // Act
+        pool.fillRack(rack);
+
+        // Assert
+        assertEquals(5, rack.size());
+    }
 }
