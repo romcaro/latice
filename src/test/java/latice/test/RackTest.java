@@ -26,4 +26,21 @@ class RackTest {
         // Assert
         assertTrue(result);
     }
+    
+    @Test
+    void shouldNotAddTileWhenRackIsFull() {
+        // Arrange
+        rack.addTile(new Tile(Color.GREEN, Shape.BIRD));
+        rack.addTile(new Tile(Color.RED, Shape.DOLPHIN));
+        rack.addTile(new Tile(Color.NAVY, Shape.TURTLE));
+        rack.addTile(new Tile(Color.TEAL, Shape.GECKO));
+        rack.addTile(new Tile(Color.MAGENTA, Shape.FLOWER));
+        Tile extraTile = new Tile(Color.YELLOW, Shape.FEATHER);
+
+        // Act
+        boolean result = rack.addTile(extraTile);
+
+        // Assert
+        assertFalse(result);
+    }
 }
