@@ -106,4 +106,17 @@ class RackTest {
         // Assert
         assertTrue(rack.isEmpty());
     }
+    
+    @Test
+    void shouldBeEmptyAfterRemovingAllTiles() {
+        // Arrange
+        Tile tile = new Tile(Color.GREEN, Shape.BIRD);
+        rack.addTile(tile);
+
+        // Act
+        rack.removeTile(tile);
+
+        // Assert
+        assertTrue(rack.isEmpty());
+    }
 }
