@@ -85,5 +85,20 @@ class RackTest {
         // Assert
         assertFalse(result);
     }
+    
+    @Test
+    void shouldBeFullWhenFiveTilesIn() {
+        //Arrange
+        rack.addTile(new Tile(Color.GREEN, Shape.BIRD));
+        rack.addTile(new Tile(Color.RED, Shape.DOLPHIN));
+        rack.addTile(new Tile(Color.NAVY, Shape.TURTLE));
+        rack.addTile(new Tile(Color.TEAL, Shape.GECKO));
+
+        // Act
+        rack.addTile(new Tile(Color.MAGENTA, Shape.FLOWER));
+
+        // Assert
+        assertTrue(rack.isFull());
+    }
 
 }
