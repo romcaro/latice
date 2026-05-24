@@ -6,8 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import latice.model.Color;
-import latice.model.GameBoard;
-import latice.model.Pool;
+import latice.model.Game;
 import latice.model.Rack;
 import latice.model.Square;
 import latice.model.Tile;
@@ -20,31 +19,22 @@ public class LaticeController {
     @FXML
     private HBox idRackBox;
 
-    private GameBoard gameBoard;
-    private Rack rack;
-
+    private Game game;
     private static final int TILE_SIZE = 80;
 
     @FXML
     public void initialize() {
-        gameBoard = new GameBoard(9, 9);
-        gameBoard.initSpecialSquares(); //initialisation des cases spéciales
+        game = new Game("Joueur 1","Joueur 2");
+        game.setup();
+        game.chooseStartingPlayer();
+        
         setImageView(gridPane, 9, 9);
         
-        // Initialisation de la pioche et du rack
-        Pool pool = new Pool();
-        pool.generatePool();
-        pool.shuffle();
-
-        rack = new Rack();
-        pool.fillRack(rack);
-
-        // affichage du rack
-        displayRack();
+        displayRack(game.getCurrentPlayerIndex().getRack());
     }
     
     
-    private void displayRack() {
+    private void displayRack(Rack rack) {
         idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
 
         for (Tile tile : rack.getRack()) {
@@ -89,7 +79,7 @@ public class LaticeController {
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
 
-                Square square = gameBoard.getSquare(col, row);
+                Square square = game.getBoard().getSquare(col, row);
 
                 // Image de fond de la case (normal / soleil / lune)
                 ImageView bgView = new ImageView(getImageForSquare(square));

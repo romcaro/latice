@@ -8,9 +8,8 @@ public class Player {
 	private int score;
 	private int tilesPlayed;
 
-	public Player(String name, Pool pool) {
+	public Player(String name) {
 		this.name = name;
-		this.pool = pool;
 		this.rack = new Rack();
 		this.score = 0;
 		this.tilesPlayed = 0;
@@ -34,6 +33,10 @@ public class Player {
 	
 	public Pool getPool() {
 		return pool;
+	}
+	
+	public void setPool(Pool pool) {
+		this.pool = pool;
 	}
 	
 	public int getTilesPlayed() {
