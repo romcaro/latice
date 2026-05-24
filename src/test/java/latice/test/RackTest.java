@@ -73,4 +73,17 @@ class RackTest {
         //Assert
         assertTrue(result);
     }
+    
+    @Test
+    void shouldNotRemoveTileWhenNoTile() {
+        //Arrange
+        Tile tile = new Tile(Color.GREEN, Shape.BIRD);
+
+        // Act
+        boolean result = rack.removeTile(tile);
+
+        // Assert
+        assertFalse(result);
+    }
+
 }
