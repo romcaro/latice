@@ -14,6 +14,7 @@ import latice.model.Pool;
 import latice.model.Rack;
 import latice.model.Square;
 import latice.model.Tile;
+import latice.model.Referee;
 
 public class LaticeController {
 
@@ -25,6 +26,7 @@ public class LaticeController {
 
     private GameBoard gameBoard;
     private Rack rack;
+    private Referee referee;
 
     private static final int TILE_SIZE = 80;
 
@@ -33,6 +35,8 @@ public class LaticeController {
         gameBoard = new GameBoard(9, 9);
         gameBoard.initSpecialSquares(); //initialisation des cases spéciales
         setImageView(gridPane, 9, 9);
+        
+        referee = new Referee(gameBoard);
         
         // Initialisation de la pioche et du rack
         Pool pool = new Pool();
@@ -137,12 +141,15 @@ public class LaticeController {
                 		Tile tile = rack.getRack().get(tileIndex);
                 		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
                 		
-						targetSquare.setTile(tile);
-						rack.removeTile(tile);
-						displayRack(); 
-						setImageView(gridPane, width, height);
-							
-						event.setDropCompleted(true);
+                		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
+                		
+							targetSquare.setTile(tile);
+							rack.removeTile(tile);
+							displayRack(); 
+							setImageView(gridPane, width, height);
+								
+							event.setDropCompleted(true);
+                		}
 						
                 	}
                 	

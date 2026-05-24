@@ -26,6 +26,17 @@ public class GameBoard {
 	    squares[x][y] = square;
 	}
 	
+	public boolean isEmpty() {
+		for (int x = 0; x < width; x++) {
+	        for (int y = 0; y < height; y++) {
+	            if (squares[x][y].isOccupied()) {
+	                return false;
+	            }
+	        }
+	    }
+	    return true;
+	}
+	
 	public void initSpecialSquares() {
 	    // Moon center
 	    squares[4][4].setType(SquareType.MOON);

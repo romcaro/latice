@@ -24,4 +24,23 @@ public class Referee {
 		return gameBoard;
 	}
 	
+	public boolean isValidMove(GameBoard board,Tile tile,int col,int row) {
+
+		Square square = board.getSquare(col, row);
+		
+		// case déjà occupée
+		if (square.isOccupied()) {
+		return false;
+		}
+		
+		//premiere tuile sur une lune 
+		if (board.isEmpty() && square.getType() != SquareType.MOON) {
+			return false;
+		}
+		
+		return true;
+		}
+	
+	
+	
 }
