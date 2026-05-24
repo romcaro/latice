@@ -132,4 +132,19 @@ class RackTest {
         // Assert
         assertEquals(5, rack.size());
     }
+    
+    @Test
+    void shouldNotFillRackBeyondFiveFromPool() {
+        // Arrange
+        Pool pool = new Pool();
+        pool.generatePool();
+        pool.fillRack(rack);
+
+        // Act
+        pool.fillRack(rack);
+
+        // Assert
+        assertEquals(5, rack.size());
+    }
+
 }
