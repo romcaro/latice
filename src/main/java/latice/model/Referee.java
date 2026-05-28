@@ -36,10 +36,16 @@ public class Referee {
 		//premiere tuile sur une lune 
 		if (board.isEmpty() && square.getType() != SquareType.MOON) {
 			return false;
+			
 		}
 		
+		if (!board.isEmpty() && !board.allNeighborsMatch(square, tile))
+			return false;
+
 		return true;
 		}
+	
+		
 	
 	
 	
