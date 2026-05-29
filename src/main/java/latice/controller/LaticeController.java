@@ -1,5 +1,7 @@
 package latice.controller;
 
+
+
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -9,12 +11,12 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import latice.model.Color;
+import latice.model.Game;
 import latice.model.GameBoard;
-import latice.model.Pool;
 import latice.model.Rack;
+import latice.model.Referee;
 import latice.model.Square;
 import latice.model.Tile;
-import latice.model.Referee;
 
 public class LaticeController {
 
@@ -25,40 +27,34 @@ public class LaticeController {
     private HBox idRackBox;
 
     private GameBoard gameBoard;
-    private Rack rack;
     private Referee referee;
+    private Game game;
 
     private static final int TILE_SIZE = 80;
 
     @FXML
     public void initialize() {
-        gameBoard = new GameBoard(9, 9);
-        gameBoard.initSpecialSquares(); //initialisation des cases spéciales
-        setImageView(gridPane, 9, 9);
+        game = new Game("Joueur 1", "Joueur 2");
+        game.setup();
+        game.chooseStartingPlayer();
         
+        gameBoard = game.getBoard();
         referee = new Referee(gameBoard);
         
-        // Initialisation de la pioche et du rack
-        Pool pool = new Pool();
-        pool.generatePool();
-        pool.shuffle();
-
-        rack = new Rack();
-        pool.fillRack(rack);
-
-        // affichage du rack
-        displayRack();
+        
+        setImageView(gridPane, 9, 9);
+        displayRack(game.getCurrentPlayer().getRack());
     }
     
     
-    private void displayRack() {
+    private void displayRack(Rack rack) {
         idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
 
         for (int i = 0; i < rack.getRack().size(); i++) {
 
             Tile tile = rack.getRack().get(i);
-
             int tileIndex = i;
+            
             ImageView tileView = new ImageView(getImageForTile(tile));
             tileView.setFitWidth(TILE_SIZE);
             tileView.setFitHeight(TILE_SIZE);
@@ -71,11 +67,11 @@ public class LaticeController {
             	dragboard.setContent(content);
             	
             	event.consume();
-            }
-            );
+            });
             idRackBox.getChildren().add(tileView);
         }
     }
+    
     //Retourne l'image de fond d'une case selon son type (SEA, SUN, MOON)
     private Image getImageForSquare(Square square) {
         return switch (square.getType()) {
@@ -138,14 +134,19 @@ public class LaticeController {
                 	if (dragboard.hasString()) {
                 		
                 		int tileIndex = Integer.parseInt(dragboard.getString());
-                		Tile tile = rack.getRack().get(tileIndex);
+                		
+                		Rack currentRack = game.getCurrentPlayer().getRack();
+                		Tile tile = currentRack.getRack().get(tileIndex);
                 		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
                 		
                 		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
                 		
 							targetSquare.setTile(tile);
-							rack.removeTile(tile);
-							displayRack(); 
+							currentRack.removeTile(tile);
+
+							//game.getCurrentPlayer().getPool().fillRack(currentRack); remplie le rack
+							
+							displayRack(game.getCurrentPlayer().getRack());
 							setImageView(gridPane, width, height);
 								
 							event.setDropCompleted(true);
