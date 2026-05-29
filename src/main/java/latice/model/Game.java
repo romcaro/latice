@@ -40,10 +40,6 @@ public class Game {
     public Player getCurrentPlayer() {
         return players[currentPlayerIndex];
     }
-    
-    public void nextPlayer() {
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
-    }
 
     public GameBoard getBoard() {
         return board;

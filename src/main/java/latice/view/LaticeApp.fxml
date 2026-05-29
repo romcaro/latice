@@ -37,13 +37,6 @@
          </BorderPane.margin>
 		</GridPane>
    </center>
-   <right>
-        <VBox alignment="CENTER" spacing="15.0">
-            <Button text="Fin de tour"
-                    onAction="#handleEndTurn"
-                    prefWidth="150.0"/>
-        </VBox>
-    </right>
    <bottom>
       <HBox fx:id="idRackBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" BorderPane.alignment="CENTER">
          <padding>
