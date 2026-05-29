@@ -41,8 +41,18 @@ public class LaticeController {
     private Label idPlayer2Score;
     
     @FXML
+    private Label idCurrentPlayer;
+    
+    @FXML
     private void handleEndTurn() {
+
+        Player currentPlayer = game.getCurrentPlayer();
+
+        currentPlayer.getPool().fillRack(currentPlayer.getRack());
+
         game.nextPlayer();
+
+        updateCurrentPlayer();
 
         displayRack(game.getCurrentPlayer().getRack());
 
@@ -57,18 +67,22 @@ public class LaticeController {
     
     private static final int TILE_SIZE = 80;
 
+    @FXML
     public void initialize() {
-        game = new Game("Joueur 1", "Joueur 2");
+    }
+    
+    public void startGame(String player1Name, String player2Name) {
+        game = new Game(player1Name, player2Name);
         game.setup();
         game.chooseStartingPlayer();
-        
+
         gameBoard = game.getBoard();
         referee = new Referee(gameBoard);
-        
-        
+
         setImageView(gridPane, 9, 9);
         displayRack(game.getCurrentPlayer().getRack());
         updateScores();
+        updateCurrentPlayer();
     }
     
     
@@ -114,6 +128,12 @@ public class LaticeController {
 
         idPlayer2Name.setText(players[1].getName());
         idPlayer2Score.setText(String.valueOf(players[1].getScore()));
+    }
+    
+    private void updateCurrentPlayer() {
+        idCurrentPlayer.setText(
+            "Player Turn : " + game.getCurrentPlayer().getName()
+        );
     }
 
     private Image loadImage(String path) {
