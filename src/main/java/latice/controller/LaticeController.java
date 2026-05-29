@@ -20,6 +20,7 @@ import latice.model.Tile;
 
 public class LaticeController {
 
+
     @FXML
     private GridPane gridPane;
     
@@ -31,6 +32,17 @@ public class LaticeController {
     private Game game;
 
     private static final int TILE_SIZE = 80;
+    
+    @FXML
+    private void handleEndTurn() {
+        game.nextPlayer();
+
+        displayRack(game.getCurrentPlayer().getRack());
+
+        setImageView(gridPane, 9, 9);
+
+        updateScores();
+    }
 
     @FXML
     public void initialize() {
