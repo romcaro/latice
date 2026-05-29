@@ -48,4 +48,8 @@ public class Game {
     public Player[] getPlayers() {
         return players;
     }
+    
+    public void nextPlayer() {
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+    }
 }

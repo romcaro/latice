@@ -39,6 +39,17 @@ public class LaticeController {
     
     @FXML
     private Label idPlayer2Score;
+    
+    @FXML
+    private void handleEndTurn() {
+        game.nextPlayer();
+
+        displayRack(game.getCurrentPlayer().getRack());
+
+        setImageView(gridPane, 9, 9);
+
+        updateScores();
+    }
        
     private GameBoard gameBoard;
     private Referee referee;
