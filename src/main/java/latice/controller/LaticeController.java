@@ -3,6 +3,9 @@ package latice.controller;
 import javafx.fxml.FXML;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import latice.model.Color;
@@ -10,6 +13,7 @@ import latice.model.Game;
 import latice.model.Rack;
 import latice.model.Square;
 import latice.model.Tile;
+import latice.model.Referee;
 
 public class LaticeController {
 
@@ -37,10 +41,25 @@ public class LaticeController {
     private void displayRack(Rack rack) {
         idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
 
-        for (Tile tile : rack.getRack()) {
+        for (int i = 0; i < rack.getRack().size(); i++) {
+
+            Tile tile = rack.getRack().get(i);
+
+            int tileIndex = i;
             ImageView tileView = new ImageView(getImageForTile(tile));
             tileView.setFitWidth(TILE_SIZE);
             tileView.setFitHeight(TILE_SIZE);
+            
+            tileView.setOnDragDetected(event -> {
+            	Dragboard dragboard = tileView.startDragAndDrop(TransferMode.ANY);
+            	
+            	ClipboardContent content = new ClipboardContent();
+            	content.putString(String.valueOf(tileIndex));
+            	dragboard.setContent(content);
+            	
+            	event.consume();
+            }
+            );
             idRackBox.getChildren().add(tileView);
         }
     }
@@ -76,8 +95,13 @@ public class LaticeController {
     }
     
     private void setImageView(GridPane gridPane, int width, int height) {
+    	gridPane.getChildren().clear();
+    	
         for (int row = 0; row < height; row++) {
             for (int col = 0; col < width; col++) {
+            	
+            	int currentCol = col;
+            	int currentRow = row;
 
                 Square square = game.getBoard().getSquare(col, row);
 
@@ -85,13 +109,44 @@ public class LaticeController {
                 ImageView bgView = new ImageView(getImageForSquare(square));
                 bgView.setFitWidth(TILE_SIZE);
                 bgView.setFitHeight(TILE_SIZE);
+                
+                bgView.setOnDragOver(event -> {
+                	if (event.getDragboard().hasString()) {
+						event.acceptTransferModes(TransferMode.ANY);
+					}
+                	
+                	event.consume();
+                	});
+
+                
+                bgView.setOnDragDropped(event -> {
+                	Dragboard dragboard = event.getDragboard();
+                	
+                	if (dragboard.hasString()) {
+                		
+                		int tileIndex = Integer.parseInt(dragboard.getString());
+                		Tile tile = rack.getRack().get(tileIndex);
+                		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
+                		
+                		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
+                		
+							targetSquare.setTile(tile);
+							rack.removeTile(tile);
+							displayRack(); 
+							setImageView(gridPane, width, height);
+								
+							event.setDropCompleted(true);
+                		}
+						
+                	}
+                	
+                	event.consume();
+                });
+                
 
                 // Si la case contient une tuile, on superpose son image
                 if (square.isOccupied()) {
-                    ImageView tileView = new ImageView(getImageForTile(square.getTile()));
-                    tileView.setFitWidth(TILE_SIZE);
-                    tileView.setFitHeight(TILE_SIZE);
-                    // Plus tard, on pourra utiliser un StackPane pour superposer bg + tuile
+                    bgView.setImage(getImageForTile(square.getTile()));
                 }
 
                 gridPane.add(bgView, col, row);
