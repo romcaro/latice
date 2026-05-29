@@ -108,6 +108,36 @@ public class GameBoard {
 	    return neighborTile.getColor() == tile.getColor() || neighborTile.getShape() == tile.getShape();
 	}
 	
+	public int countMatchingNeighbors(Square square, Tile tile) {
+	    Position position = square.getPosition();
+	    int col = position.getX();
+	    int row = position.getY();
+
+	    int count = 0;
+
+	    if (col > 0 && squares[col - 1][row].isOccupied()
+	            && matchesNeighbor(squares[col - 1][row], tile)) {
+	        count++;
+	    }
+
+	    if (col < width - 1 && squares[col + 1][row].isOccupied()
+	            && matchesNeighbor(squares[col + 1][row], tile)) {
+	        count++;
+	    }
+
+	    if (row > 0 && squares[col][row - 1].isOccupied()
+	            && matchesNeighbor(squares[col][row - 1], tile)) {
+	        count++;
+	    }
+
+	    if (row < height - 1 && squares[col][row + 1].isOccupied()
+	            && matchesNeighbor(squares[col][row + 1], tile)) {
+	        count++;
+	    }
+
+	    return count;
+	}
+	
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

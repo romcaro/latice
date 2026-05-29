@@ -3,6 +3,7 @@ package latice.controller;
 
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import latice.model.Color;
 import latice.model.Game;
 import latice.model.GameBoard;
+import latice.model.Player;
 import latice.model.Rack;
 import latice.model.Referee;
 import latice.model.Square;
@@ -26,13 +28,24 @@ public class LaticeController {
     @FXML
     private HBox idRackBox;
 
+    @FXML
+    private Label idPlayer1Name;
+    
+    @FXML
+    private Label idPlayer1Score;
+    
+    @FXML
+    private Label idPlayer2Name;
+    
+    @FXML
+    private Label idPlayer2Score;
+       
     private GameBoard gameBoard;
     private Referee referee;
     private Game game;
-
+    
     private static final int TILE_SIZE = 80;
 
-    @FXML
     public void initialize() {
         game = new Game("Joueur 1", "Joueur 2");
         game.setup();
@@ -44,6 +57,7 @@ public class LaticeController {
         
         setImageView(gridPane, 9, 9);
         displayRack(game.getCurrentPlayer().getRack());
+        updateScores();
     }
     
     
@@ -79,6 +93,16 @@ public class LaticeController {
             case MOON -> loadImage("/latice/assets/bg_moon.png");
             default   -> loadImage("/latice/assets/bg_sea.png");
         };
+    }
+    
+    private void updateScores() {
+        Player[] players = game.getPlayers();
+
+        idPlayer1Name.setText(players[0].getName());
+        idPlayer1Score.setText(String.valueOf(players[0].getScore()));
+
+        idPlayer2Name.setText(players[1].getName());
+        idPlayer2Score.setText(String.valueOf(players[1].getScore()));
     }
 
     private Image loadImage(String path) {
@@ -140,16 +164,24 @@ public class LaticeController {
                 		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
                 		
                 		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
-                		
-							targetSquare.setTile(tile);
-							currentRack.removeTile(tile);
 
-							//game.getCurrentPlayer().getPool().fillRack(currentRack); remplie le rack
-							
-							displayRack(game.getCurrentPlayer().getRack());
-							setImageView(gridPane, width, height);
-								
-							event.setDropCompleted(true);
+                		    int points = referee.calculatePoints(
+                		                    gameBoard,
+                		                    tile,
+                		                    currentCol,
+                		                    currentRow
+                		            );
+
+                		    game.getCurrentPlayer().addScore(points);
+                		    targetSquare.setTile(tile);
+                		    currentRack.removeTile(tile);
+
+                		    updateScores();
+
+                		    displayRack(game.getCurrentPlayer().getRack());
+                		    setImageView(gridPane, width, height);
+
+                		    event.setDropCompleted(true);
                 		}
 						
                 	}

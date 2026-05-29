@@ -2,6 +2,8 @@ package latice.model;
 
 public class Referee {
 	
+	private static final int MAX_CYCLES = 10;
+	
 	private int cycleCount;
 	private GameBoard gameBoard;
 	
@@ -43,8 +45,25 @@ public class Referee {
 		return true;
 		}
 	
-		
-	
-	
+	public int calculatePoints(GameBoard board, Tile tile, int col, int row) {
+	    Square square = board.getSquare(col, row);
+
+	    int matches = board.countMatchingNeighbors(square, tile);
+	    int points = 0;
+
+	    if (matches == 2) {
+	        points += 1;
+	    } else if (matches == 3) {
+	        points += 2;
+	    } else if (matches == 4) {
+	        points += 4;
+	    }
+
+	    if (square.getType() == SquareType.SUN) {
+	        points += 2;
+	    }
+
+	    return points;
+	}
 	
 }
