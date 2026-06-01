@@ -8,6 +8,7 @@ public class Game {
     private GameBoard board;
     private Player[] players;
     private int currentPlayerIndex;
+    private int cycleCount;
 
     public Game(String namePlayer1, String namePlayer2) {
         this.board = new GameBoard(9, 9);
@@ -17,6 +18,8 @@ public class Game {
             new Player(namePlayer1),
             new Player(namePlayer2)
         };
+        
+        this.cycleCount = 0;
 
     }
 
@@ -49,7 +52,16 @@ public class Game {
         return players;
     }
     
+    public int getCycleCount() {
+        return cycleCount;
+    }
+    
     public void nextPlayer() {
+
         currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+
+        if (currentPlayerIndex == 0) {
+            cycleCount++;
+        }
     }
 }

@@ -1,8 +1,8 @@
 package latice.controller;
 
 
-
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -42,9 +42,23 @@ public class LaticeController {
     
     @FXML
     private Label idCurrentPlayer;
+       
+    private GameBoard gameBoard;
+    private Referee referee;
+    private Game game;
+    private boolean gameFinished = false;
+    
+    private static final int TILE_SIZE = 80;
+
+    @FXML
+    public void initialize() {
+    }
     
     @FXML
     private void handleEndTurn() {
+        if (gameFinished) {
+            return;
+        }
 
         Player currentPlayer = game.getCurrentPlayer();
 
@@ -52,23 +66,16 @@ public class LaticeController {
 
         game.nextPlayer();
 
+        if (referee.isGameFinished(game)) {
+            gameFinished = true;
+            showResults();
+            return;
+        }
+
         updateCurrentPlayer();
-
         displayRack(game.getCurrentPlayer().getRack());
-
         setImageView(gridPane, 9, 9);
-
         updateScores();
-    }
-       
-    private GameBoard gameBoard;
-    private Referee referee;
-    private Game game;
-    
-    private static final int TILE_SIZE = 80;
-
-    @FXML
-    public void initialize() {
     }
     
     public void startGame(String player1Name, String player2Name) {
@@ -83,6 +90,17 @@ public class LaticeController {
         displayRack(game.getCurrentPlayer().getRack());
         updateScores();
         updateCurrentPlayer();
+    }
+    
+    private void showResults() {
+    	Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+    	alert.setTitle("Game Results");
+    	alert.setHeaderText(null);
+
+    	alert.setContentText(referee.getResults(game));
+
+    	alert.showAndWait();
     }
     
     
@@ -132,7 +150,7 @@ public class LaticeController {
     
     private void updateCurrentPlayer() {
         idCurrentPlayer.setText(
-            "Player Turn : " + game.getCurrentPlayer().getName()
+            "Player  : " + game.getCurrentPlayer().getName()
         );
     }
 
@@ -184,6 +202,12 @@ public class LaticeController {
 
                 
                 bgView.setOnDragDropped(event -> {
+                	 if (gameFinished) {
+                	     event.setDropCompleted(false);
+                	     event.consume();
+                	     return;
+                	 }
+
                 	Dragboard dragboard = event.getDragboard();
                 	
                 	if (dragboard.hasString()) {

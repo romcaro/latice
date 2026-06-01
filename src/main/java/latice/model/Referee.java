@@ -65,5 +65,24 @@ public class Referee {
 
 	    return points;
 	}
+
+	public boolean isGameFinished(Game game) {
+	    return game.getCycleCount() >= MAX_CYCLES;
+	}
+
+	public String getResults(Game game) {
+
+	    Player[] players = game.getPlayers();
+
+	    if (players[0].getScore() > players[1].getScore()) {
+	        return players[0].getName() + " wins!";
+	    }
+
+	    if (players[1].getScore() > players[0].getScore()) {
+	        return players[1].getName() + " wins!";
+	    }
+
+	    return "Draw!";
+	}
 	
 }
