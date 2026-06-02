@@ -24,9 +24,17 @@ public class Referee {
 		return gameBoard;
 	}
 	
-	public boolean isValidMove(GameBoard board,Tile tile,int col,int row) {
-
+	public boolean isValidMove(Game game, 
+								GameBoard board,
+								Tile tile,
+								int col,
+								int row) {
+		
 		Square square = board.getSquare(col, row);
+		
+	    if (game.getCurrentPlayer().hasPlayedThisTurn()) {
+	        return false;
+	    }
 		
 		// case déjà occupée
 		if (square.isOccupied()) {
@@ -38,7 +46,7 @@ public class Referee {
 			return false;
 			
 		}
-		
+
 		if (!board.isEmpty() && !board.allNeighborsMatch(square, tile))
 			return false;
 
@@ -51,7 +59,9 @@ public class Referee {
 	    int matches = board.countMatchingNeighbors(square, tile);
 	    int points = 0;
 
-	    if (matches == 2) {
+	    if (matches == 1) {
+	        points = 0; // pas de point avec un seul voisin
+	    }else if (matches == 2) {
 	        points += 1;
 	    } else if (matches == 3) {
 	        points += 2;
