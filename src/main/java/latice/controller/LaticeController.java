@@ -42,6 +42,9 @@ public class LaticeController {
     
     @FXML
     private Label idCurrentPlayer;
+    
+    @FXML
+    private Label idCycleCount;
        
     private GameBoard gameBoard;
     private Referee referee;
@@ -61,10 +64,11 @@ public class LaticeController {
         }
 
         Player currentPlayer = game.getCurrentPlayer();
-
         currentPlayer.getPool().fillRack(currentPlayer.getRack());
+        currentPlayer.setHasPlayedThisTurn(false);
 
         game.nextPlayer();
+        updateCycleCount();
 
         if (referee.isGameFinished(game)) {
             gameFinished = true;
@@ -90,6 +94,7 @@ public class LaticeController {
         displayRack(game.getCurrentPlayer().getRack());
         updateScores();
         updateCurrentPlayer();
+        updateCycleCount();
     }
     
     private void showResults() {
@@ -123,6 +128,14 @@ public class LaticeController {
             	content.putString(String.valueOf(tileIndex));
             	dragboard.setContent(content);
             	
+                
+                Image drawView = tileView.getImage();
+                dragboard.setDragView(drawView);
+                
+                dragboard.setDragViewOffsetX(drawView.getWidth() / 2);
+                dragboard.setDragViewOffsetY(drawView.getHeight() / 2);
+                
+            	
             	event.consume();
             });
             idRackBox.getChildren().add(tileView);
@@ -150,9 +163,15 @@ public class LaticeController {
     
     private void updateCurrentPlayer() {
         idCurrentPlayer.setText(
-            "Player  : " + game.getCurrentPlayer().getName()
+            "Player : " + game.getCurrentPlayer().getName()
         );
     }
+    
+    private void updateCycleCount() {
+        idCycleCount.setText("CYCLECOUNT : " + game.getCycleCount());
+    }
+    
+    
 
     private Image loadImage(String path) {
         return new Image(getClass().getResource(path).toExternalForm());
@@ -218,7 +237,7 @@ public class LaticeController {
                 		Tile tile = currentRack.getRack().get(tileIndex);
                 		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
                 		
-                		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
+                		if (referee.isValidMove(game, gameBoard, tile, currentCol, currentRow)) {
 
                 		    int points = referee.calculatePoints(
                 		                    gameBoard,
@@ -226,13 +245,15 @@ public class LaticeController {
                 		                    currentCol,
                 		                    currentRow
                 		            );
-
-                		    game.getCurrentPlayer().addScore(points);
+                		    
+                		    game.getCurrentPlayer().addScore(points);	
+                		    game.getCurrentPlayer().addTilesPlayed(); 
+                		    game.getCurrentPlayer().setHasPlayedThisTurn(true);
+                		    
                 		    targetSquare.setTile(tile);
                 		    currentRack.removeTile(tile);
 
                 		    updateScores();
-
                 		    displayRack(game.getCurrentPlayer().getRack());
                 		    setImageView(gridPane, width, height);
 
