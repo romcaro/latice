@@ -45,6 +45,9 @@ public class LaticeController {
     
     @FXML
     private Label idCycleCount;
+    
+    @FXML
+    private Label idMessage;
        
     private GameBoard gameBoard;
     private Referee referee;
@@ -82,6 +85,30 @@ public class LaticeController {
         updateScores();
     }
     
+    @FXML
+    private void handleBuyExtraAction() {
+        if (gameFinished) {
+            return;
+        }
+
+        Player currentPlayer = game.getCurrentPlayer();
+
+        if (!currentPlayer.hasPlayedThisTurn()) {
+            showMessage("You must play a tile before buying an extra action.");
+            return;
+        }
+
+        if (!currentPlayer.spendPoints(2)) {
+            showMessage("You need 2 points to buy an extra action.");
+            return;
+        }
+
+        currentPlayer.setHasPlayedThisTurn(false);
+
+        updateScores();
+        showMessage("Extra action bought.");
+    }
+    
     public void startGame(String player1Name, String player2Name) {
         game = new Game(player1Name, player2Name);
         game.setup();
@@ -107,6 +134,10 @@ public class LaticeController {
 
     	alert.showAndWait();
     }
+    
+    private void showMessage(String message) {
+		idMessage.setText(message);
+	}
     
     
     private void displayRack(Rack rack) {
@@ -165,6 +196,8 @@ public class LaticeController {
         idCurrentPlayer.setText(
             "Player : " + game.getCurrentPlayer().getName()
         );
+        
+        idMessage.setText("");
     }
     
     private void updateCycleCount() {

@@ -82,8 +82,12 @@
          </Label>
 	
 	      <Label fx:id="idCurrentPlayer" style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Player Turn : Player 1" />
+	      
+	      <Label fx:id="idMessage" text="" wrapText="true" prefWidth="150.0" />
 	
 	      <Button onAction="#handleEndTurn" prefWidth="150.0" text="End Turn" />
+	      
+	      <Button text="Buy Action" onAction="#handleBuyExtraAction" prefWidth="150.0" />
 	   </VBox>
 	</right>
    <bottom>

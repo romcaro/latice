@@ -61,5 +61,14 @@ public class Player {
 	public String toString() {
 		return "Player{name='" + name + "', score=" + score + ", tilesPlayed=" + tilesPlayed + "}";
 	}
+	
+	public boolean spendPoints(int points) {
+	    if (score < points) {
+	        return false;
+	    }
+
+	    score -= points;
+	    return true;
+	}
 
 }
