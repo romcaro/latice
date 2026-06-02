@@ -15,15 +15,17 @@ public class GameBoardFX extends Application {
  
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
-		FXMLLoader loader = new FXMLLoader(getClass().getResource("LaticeApp.fxml"));
 
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
+	    FXMLLoader loader =
+	            new FXMLLoader(getClass().getResource("StartMenu.fxml"));
 
-        primaryStage.setTitle("Latice");
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.show();
-    }
+	    Parent root = loader.load();
+
+	    Scene scene = new Scene(root);
+
+	    primaryStage.setTitle("Latice");
+	    primaryStage.setScene(scene);
+	    primaryStage.setResizable(false);
+	    primaryStage.show();
+	}
 }

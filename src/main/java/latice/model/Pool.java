@@ -24,6 +24,7 @@ public class Pool {
 	public void generatePool() {
 		if (!tiles.isEmpty())
 	        return;
+		//tiles.add(new Tile(Color.RED, Shape.DOLPHIN)); # test color
 		for (Shape shape : Shape.values()) {
 			for (Color color : Color.values()) {
 				tiles.add(new Tile(color, shape));

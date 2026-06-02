@@ -1,8 +1,9 @@
 package latice.controller;
 
 
-
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.ClipboardContent;
@@ -13,6 +14,7 @@ import javafx.scene.layout.HBox;
 import latice.model.Color;
 import latice.model.Game;
 import latice.model.GameBoard;
+import latice.model.Player;
 import latice.model.Rack;
 import latice.model.Referee;
 import latice.model.Square;
@@ -26,24 +28,84 @@ public class LaticeController {
     @FXML
     private HBox idRackBox;
 
+    @FXML
+    private Label idPlayer1Name;
+    
+    @FXML
+    private Label idPlayer1Score;
+    
+    @FXML
+    private Label idPlayer2Name;
+    
+    @FXML
+    private Label idPlayer2Score;
+    
+    @FXML
+    private Label idCurrentPlayer;
+    
+    @FXML
+    private Label idCycleCount;
+       
     private GameBoard gameBoard;
     private Referee referee;
     private Game game;
-
+    private boolean gameFinished = false;
+    
     private static final int TILE_SIZE = 80;
 
     @FXML
     public void initialize() {
-        game = new Game("Joueur 1", "Joueur 2");
+    }
+    
+    @FXML
+    private void handleEndTurn() {
+        if (gameFinished) {
+            return;
+        }
+
+        Player currentPlayer = game.getCurrentPlayer();
+        currentPlayer.getPool().fillRack(currentPlayer.getRack());
+        currentPlayer.setHasPlayedThisTurn(false);
+
+        game.nextPlayer();
+        updateCycleCount();
+
+        if (referee.isGameFinished(game)) {
+            gameFinished = true;
+            showResults();
+            return;
+        }
+
+        updateCurrentPlayer();
+        displayRack(game.getCurrentPlayer().getRack());
+        setImageView(gridPane, 9, 9);
+        updateScores();
+    }
+    
+    public void startGame(String player1Name, String player2Name) {
+        game = new Game(player1Name, player2Name);
         game.setup();
         game.chooseStartingPlayer();
-        
+
         gameBoard = game.getBoard();
         referee = new Referee(gameBoard);
-        
-        
+
         setImageView(gridPane, 9, 9);
         displayRack(game.getCurrentPlayer().getRack());
+        updateScores();
+        updateCurrentPlayer();
+        updateCycleCount();
+    }
+    
+    private void showResults() {
+    	Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+    	alert.setTitle("Game Results");
+    	alert.setHeaderText(null);
+
+    	alert.setContentText(referee.getResults(game));
+
+    	alert.showAndWait();
     }
     
     
@@ -66,6 +128,14 @@ public class LaticeController {
             	content.putString(String.valueOf(tileIndex));
             	dragboard.setContent(content);
             	
+                
+                Image drawView = tileView.getImage();
+                dragboard.setDragView(drawView);
+                
+                dragboard.setDragViewOffsetX(drawView.getWidth() / 2);
+                dragboard.setDragViewOffsetY(drawView.getHeight() / 2);
+                
+            	
             	event.consume();
             });
             idRackBox.getChildren().add(tileView);
@@ -80,6 +150,28 @@ public class LaticeController {
             default   -> loadImage("/latice/assets/bg_sea.png");
         };
     }
+    
+    private void updateScores() {
+        Player[] players = game.getPlayers();
+
+        idPlayer1Name.setText(players[0].getName());
+        idPlayer1Score.setText(String.valueOf(players[0].getScore()));
+
+        idPlayer2Name.setText(players[1].getName());
+        idPlayer2Score.setText(String.valueOf(players[1].getScore()));
+    }
+    
+    private void updateCurrentPlayer() {
+        idCurrentPlayer.setText(
+            "Player : " + game.getCurrentPlayer().getName()
+        );
+    }
+    
+    private void updateCycleCount() {
+        idCycleCount.setText("CYCLECOUNT : " + game.getCycleCount());
+    }
+    
+    
 
     private Image loadImage(String path) {
         return new Image(getClass().getResource(path).toExternalForm());
@@ -129,6 +221,12 @@ public class LaticeController {
 
                 
                 bgView.setOnDragDropped(event -> {
+                	 if (gameFinished) {
+                	     event.setDropCompleted(false);
+                	     event.consume();
+                	     return;
+                	 }
+
                 	Dragboard dragboard = event.getDragboard();
                 	
                 	if (dragboard.hasString()) {
@@ -139,17 +237,27 @@ public class LaticeController {
                 		Tile tile = currentRack.getRack().get(tileIndex);
                 		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
                 		
-                		if (referee.isValidMove(gameBoard, tile, currentCol, currentRow)) {
-                		
-							targetSquare.setTile(tile);
-							currentRack.removeTile(tile);
+                		if (referee.isValidMove(game, gameBoard, tile, currentCol, currentRow)) {
 
-							//game.getCurrentPlayer().getPool().fillRack(currentRack); remplie le rack
-							
-							displayRack(game.getCurrentPlayer().getRack());
-							setImageView(gridPane, width, height);
-								
-							event.setDropCompleted(true);
+                		    int points = referee.calculatePoints(
+                		                    gameBoard,
+                		                    tile,
+                		                    currentCol,
+                		                    currentRow
+                		            );
+                		    
+                		    game.getCurrentPlayer().addScore(points);	
+                		    game.getCurrentPlayer().addTilesPlayed(); 
+                		    game.getCurrentPlayer().setHasPlayedThisTurn(true);
+                		    
+                		    targetSquare.setTile(tile);
+                		    currentRack.removeTile(tile);
+
+                		    updateScores();
+                		    displayRack(game.getCurrentPlayer().getRack());
+                		    setImageView(gridPane, width, height);
+
+                		    event.setDropCompleted(true);
                 		}
 						
                 	}

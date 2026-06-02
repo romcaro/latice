@@ -7,6 +7,8 @@ public class Player {
 	private Rack rack;
 	private int score;
 	private int tilesPlayed;
+	private boolean hasPlayedThisTurn = false;
+
 
 	public Player(String name) {
 		this.name = name;
@@ -45,6 +47,14 @@ public class Player {
 	
 	public void addTilesPlayed() {
 		this.tilesPlayed++;
+	}
+	
+	public boolean hasPlayedThisTurn() {
+	    return hasPlayedThisTurn;
+	}
+
+	public void setHasPlayedThisTurn(boolean value) {
+	    this.hasPlayedThisTurn = value;
 	}
 	
 	@Override

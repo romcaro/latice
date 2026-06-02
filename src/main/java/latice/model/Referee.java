@@ -2,6 +2,8 @@ package latice.model;
 
 public class Referee {
 	
+	private static final int MAX_CYCLES = 10;
+	
 	private int cycleCount;
 	private GameBoard gameBoard;
 	
@@ -22,9 +24,17 @@ public class Referee {
 		return gameBoard;
 	}
 	
-	public boolean isValidMove(GameBoard board,Tile tile,int col,int row) {
-
+	public boolean isValidMove(Game game, 
+								GameBoard board,
+								Tile tile,
+								int col,
+								int row) {
+		
 		Square square = board.getSquare(col, row);
+		
+	    if (game.getCurrentPlayer().hasPlayedThisTurn()) {
+	        return false;
+	    }
 		
 		// case déjà occupée
 		if (square.isOccupied()) {
@@ -36,15 +46,53 @@ public class Referee {
 			return false;
 			
 		}
-		
+
 		if (!board.isEmpty() && !board.allNeighborsMatch(square, tile))
 			return false;
 
 		return true;
 		}
 	
-		
-	
-	
+	public int calculatePoints(GameBoard board, Tile tile, int col, int row) {
+	    Square square = board.getSquare(col, row);
+
+	    int matches = board.countMatchingNeighbors(square, tile);
+	    int points = 0;
+
+	    if (matches == 1) {
+	        points = 0; // pas de point avec un seul voisin
+	    }else if (matches == 2) {
+	        points += 1;
+	    } else if (matches == 3) {
+	        points += 2;
+	    } else if (matches == 4) {
+	        points += 4;
+	    }
+
+	    if (square.getType() == SquareType.SUN) {
+	        points += 2;
+	    }
+
+	    return points;
+	}
+
+	public boolean isGameFinished(Game game) {
+	    return game.getCycleCount() >= MAX_CYCLES;
+	}
+
+	public String getResults(Game game) {
+
+	    Player[] players = game.getPlayers();
+
+	    if (players[0].getScore() > players[1].getScore()) {
+	        return players[0].getName() + " wins!";
+	    }
+
+	    if (players[1].getScore() > players[0].getScore()) {
+	        return players[1].getName() + " wins!";
+	    }
+
+	    return "Draw!";
+	}
 	
 }
