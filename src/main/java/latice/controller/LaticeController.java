@@ -168,7 +168,7 @@ public class LaticeController {
     }
     
     private void updateCycleCount() {
-        idCycleCount.setText("CYCLECOUNT : " + game.getCycleCount());
+        idCycleCount.setText("Cycle Count : " + game.getCycleCount());
     }
     
     
