@@ -88,6 +88,8 @@
 	      <Button onAction="#handleEndTurn" prefWidth="150.0" text="End Turn" />
 	      
 	      <Button text="Buy Action" onAction="#handleBuyExtraAction" prefWidth="150.0" />
+	      
+	      <Button text="Exchange Rack" onAction="#handleExchangeRack" prefWidth="150.0" />
 	   </VBox>
 	</right>
    <bottom>

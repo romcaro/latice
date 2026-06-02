@@ -62,4 +62,8 @@ public class Pool {
 	        rack.addTile(this.draw());
 	    }
 	}
+	
+	public void addTile(Tile tile) {
+	    tiles.add(tile);
+	}
 }

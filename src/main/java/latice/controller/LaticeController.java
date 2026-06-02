@@ -15,6 +15,7 @@ import latice.model.Color;
 import latice.model.Game;
 import latice.model.GameBoard;
 import latice.model.Player;
+import latice.model.Pool;
 import latice.model.Rack;
 import latice.model.Referee;
 import latice.model.Square;
@@ -107,6 +108,29 @@ public class LaticeController {
 
         updateScores();
         showMessage("Extra action bought.");
+    }
+    
+    @FXML
+    private void handleExchangeRack() {
+        if (gameFinished) {
+            return;
+        }
+
+        Player currentPlayer = game.getCurrentPlayer();
+        Rack rack = currentPlayer.getRack();
+        Pool pool = currentPlayer.getPool();
+
+        while (!rack.isEmpty()) {
+            Tile tile = rack.getRack().get(0);
+
+            rack.removeTile(tile);
+            pool.addTile(tile);
+        }
+
+        pool.shuffle();
+        pool.fillRack(rack);
+
+        handleEndTurn();
     }
     
     public void startGame(String player1Name, String player2Name) {
