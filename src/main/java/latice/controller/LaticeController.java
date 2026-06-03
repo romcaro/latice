@@ -434,9 +434,13 @@ public class LaticeController {
 
     private Image loadImage(String path) {
         if (!imageCache.containsKey(path)) {
+        	
+            
+            var url = getClass().getResource(path);
+        	
             imageCache.put(
                 path,
-                new Image(getClass().getResource(path).toExternalForm())
+                new Image(url.toExternalForm())
             );
         }
 
