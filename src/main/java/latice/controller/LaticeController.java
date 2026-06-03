@@ -1,8 +1,11 @@
 package latice.controller;
 
 import javafx.animation.FadeTransition;
+import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
+import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -159,7 +162,9 @@ public class LaticeController {
     }
 
     private void playTile(Tile tile, Rack rack, Square targetSquare, int col, int row) {
-        int points = referee.calculatePoints(gameBoard, tile, col, row);
+    	int matchPoints = referee.calculateMatchPoints(gameBoard, tile, col, row);
+    	int sunPoints = referee.calculateSunPoints(gameBoard, col, row);
+    	int points = matchPoints + sunPoints;
 
         Player currentPlayer = game.getCurrentPlayer();
 
@@ -171,6 +176,9 @@ public class LaticeController {
         rack.removeTile(tile);
 
         refreshGameView(NO_ANIMATION);
+
+        showPointsAnimation(matchPoints, col, row, 0);
+        showPointsAnimation(sunPoints, col, row, 300);
     }
 
     private void refreshGameView(int animatedFromIndex) {
@@ -326,6 +334,46 @@ public class LaticeController {
 
         idPlayer2Name.setText(players[1].getName());
         idPlayer2Score.setText(String.valueOf(players[1].getScore()));
+    }
+    
+    private void showPointsAnimation(int points, int col, int row, int delay) {
+        if (points <= 0) {
+            return;
+        }
+
+        String path = switch (points) {
+            case 1 -> "/latice/assets/+1.png";
+            case 2 -> "/latice/assets/+2.png";
+            case 4 -> "/latice/assets/+4.png";
+            default -> null;
+        };
+
+        if (path == null) {
+            return;
+        }
+
+        ImageView pointView = new ImageView(loadImage(path));
+        pointView.setFitWidth(60);
+        pointView.setPreserveRatio(true);
+        pointView.setMouseTransparent(true);
+
+        GridPane.setHalignment(pointView, HPos.CENTER);
+        pointView.setTranslateY(-35);
+
+        gridPane.add(pointView, col, row);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(800), pointView);
+        fade.setFromValue(1);
+        fade.setToValue(0);
+
+        TranslateTransition move = new TranslateTransition(Duration.millis(800), pointView);
+        move.setFromY(-35);
+        move.setToY(-75);
+
+        ParallelTransition animation = new ParallelTransition(fade, move);
+        animation.setDelay(Duration.millis(delay));
+        animation.setOnFinished(event -> gridPane.getChildren().remove(pointView));
+        animation.play();
     }
 
     private void updateCurrentPlayer() {

@@ -75,6 +75,36 @@ public class Referee {
 
 	    return points;
 	}
+	
+	public int calculateMatchPoints(GameBoard board, Tile tile, int col, int row) {
+	    Square square = board.getSquare(col, row);
+
+	    int matches = board.countMatchingNeighbors(square, tile);
+
+	    if (matches == 2) {
+	        return 1;
+	    }
+
+	    if (matches == 3) {
+	        return 2;
+	    }
+
+	    if (matches == 4) {
+	        return 4;
+	    }
+
+	    return 0;
+	}
+	
+	public int calculateSunPoints(GameBoard board, int col, int row) {
+	    Square square = board.getSquare(col, row);
+
+	    if (square.getType() == SquareType.SUN) {
+	        return 2;
+	    }
+
+	    return 0;
+	}
 
 	public boolean isGameFinished(Game game) {
 		return game.getCycleCount() >= MAX_CYCLES
