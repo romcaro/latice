@@ -1,6 +1,8 @@
 package latice.controller;
 
 
+import javafx.animation.FadeTransition;
+import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -11,6 +13,7 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Duration;
 import latice.model.Color;
 import latice.model.Game;
 import latice.model.GameBoard;
@@ -67,9 +70,7 @@ public class LaticeController {
             return;
         }
 
-        Player currentPlayer = game.getCurrentPlayer();
-        currentPlayer.getPool().fillRack(currentPlayer.getRack());
-        currentPlayer.setHasPlayedThisTurn(false);
+        game.getCurrentPlayer().setHasPlayedThisTurn(false);
 
         game.nextPlayer();
         updateCycleCount();
@@ -80,10 +81,21 @@ public class LaticeController {
             return;
         }
 
+        Player newCurrentPlayer = game.getCurrentPlayer();
+
         updateCurrentPlayer();
-        displayRack(game.getCurrentPlayer().getRack());
+        displayRack(newCurrentPlayer.getRack(), Integer.MAX_VALUE);
         setImageView(gridPane, 9, 9);
         updateScores();
+
+        int oldSize = newCurrentPlayer.getRack().size();
+
+        PauseTransition pause = new PauseTransition(Duration.millis(400));
+        pause.setOnFinished(event -> {
+            newCurrentPlayer.getPool().fillRack(newCurrentPlayer.getRack());
+            displayRack(newCurrentPlayer.getRack(), oldSize);
+        });
+        pause.play();
     }
     
     @FXML
@@ -142,7 +154,7 @@ public class LaticeController {
         referee = new Referee(gameBoard);
 
         setImageView(gridPane, 9, 9);
-        displayRack(game.getCurrentPlayer().getRack());
+        displayRack(game.getCurrentPlayer().getRack(), Integer.MAX_VALUE);
         updateScores();
         updateCurrentPlayer();
         updateCycleCount();
@@ -164,17 +176,26 @@ public class LaticeController {
 	}
     
     
-    private void displayRack(Rack rack) {
+    private void displayRack(Rack rack, int animatedFromIndex) {
         idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
 
         for (int i = 0; i < rack.getRack().size(); i++) {
 
             Tile tile = rack.getRack().get(i);
             int tileIndex = i;
-            
+
             ImageView tileView = new ImageView(getImageForTile(tile));
             tileView.setFitWidth(TILE_SIZE);
             tileView.setFitHeight(TILE_SIZE);
+
+            if (i >= animatedFromIndex) {
+                tileView.setOpacity(0);
+
+                FadeTransition fade = new FadeTransition(Duration.millis(250), tileView);
+                fade.setFromValue(0);
+                fade.setToValue(1);
+                fade.play();
+            }
             
             tileView.setOnDragDetected(event -> {
             	Dragboard dragboard = tileView.startDragAndDrop(TransferMode.ANY);
@@ -311,7 +332,7 @@ public class LaticeController {
                 		    currentRack.removeTile(tile);
 
                 		    updateScores();
-                		    displayRack(game.getCurrentPlayer().getRack());
+                		    displayRack(game.getCurrentPlayer().getRack(), Integer.MAX_VALUE);
                 		    setImageView(gridPane, width, height);
 
                 		    event.setDropCompleted(true);
