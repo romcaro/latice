@@ -1,5 +1,8 @@
 package latice.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.ParallelTransition;
 import javafx.animation.PauseTransition;
@@ -32,6 +35,7 @@ public class LaticeController {
     private static final int TILE_SIZE = 80;
     private static final int BOARD_SIZE = 9;
     private static final int NO_ANIMATION = Integer.MAX_VALUE;
+    private Map<String, Image> imageCache = new HashMap<>();
 
     @FXML
     private GridPane gridPane;
@@ -175,7 +179,9 @@ public class LaticeController {
         targetSquare.setTile(tile);
         rack.removeTile(tile);
 
-        refreshGameView(NO_ANIMATION);
+        updateScores();
+        displayRack(game.getCurrentPlayer().getRack(), NO_ANIMATION);
+        displayBoard();
 
         showPointsAnimation(matchPoints, col, row, 0);
         showPointsAnimation(sunPoints, col, row, 300);
@@ -427,6 +433,13 @@ public class LaticeController {
     }
 
     private Image loadImage(String path) {
-        return new Image(getClass().getResource(path).toExternalForm());
+        if (!imageCache.containsKey(path)) {
+            imageCache.put(
+                path,
+                new Image(getClass().getResource(path).toExternalForm())
+            );
+        }
+
+        return imageCache.get(path);
     }
 }
