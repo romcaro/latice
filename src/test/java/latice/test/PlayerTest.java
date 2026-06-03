@@ -11,7 +11,7 @@ public class PlayerTest {
 	@Test
 	public void shouldAddPointsToPlayer() {
 		// Arrange
-		Player player = new Player("Alice", null);
+		Player player = new Player("Alice");
 		
 		// Act
 		player.addScore(10);
@@ -24,7 +24,7 @@ public class PlayerTest {
 	public void shouldIncrementTilesPlayed() {
 
 	    // Arrange
-	    Player player = new Player("Nolann", null);
+	    Player player = new Player("Nolann");
 
 	    // Act
 	    player.addTilesPlayed();
