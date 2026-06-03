@@ -77,18 +77,24 @@ public class Referee {
 	}
 
 	public boolean isGameFinished(Game game) {
-	    return game.getCycleCount() >= MAX_CYCLES;
+		return game.getCycleCount() >= MAX_CYCLES
+		        || hasEmptyRackAndPool(game.getPlayers()[0])
+		        || hasEmptyRackAndPool(game.getPlayers()[1]);
+	}
+	
+	private boolean hasEmptyRackAndPool(Player player) {
+	    return player.getRack().isEmpty() && player.getPool().isEmpty();
 	}
 
 	public String getResults(Game game) {
 
 	    Player[] players = game.getPlayers();
 
-	    if (players[0].getScore() > players[1].getScore()) {
+	    if (players[0].getTilesPlayed() > players[1].getTilesPlayed()) {
 	        return players[0].getName() + " wins!";
 	    }
 
-	    if (players[1].getScore() > players[0].getScore()) {
+	    if (players[1].getTilesPlayed() > players[0].getTilesPlayed()) {
 	        return players[1].getName() + " wins!";
 	    }
 
