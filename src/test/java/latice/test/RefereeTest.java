@@ -128,4 +128,113 @@ class RefereeTest {
         // Assert
         assertFalse(result);
     }
+    
+    // --- calculatePoints ---
+
+    @Test
+    void shouldReturnZeroPointsWithOneMatchingNeighbor() {
+        // Arrange
+        board.getSquare(4, 4).setTile(new Tile(Color.RED, Shape.BIRD));
+        Tile tile = new Tile(Color.RED, Shape.TURTLE);
+
+        // Act
+        int points = referee.calculatePoints(board, tile, 4, 3);
+
+        // Assert
+        assertEquals(0, points);
+    }
+
+    @Test
+    void shouldReturnOnePointWithTwoMatchingNeighbors() {
+        // Arrange
+        board.getSquare(4, 4).setTile(new Tile(Color.RED, Shape.BIRD));
+        board.getSquare(4, 2).setTile(new Tile(Color.RED, Shape.TURTLE));
+        Tile tile = new Tile(Color.RED, Shape.GECKO);
+
+        // Act
+        int points = referee.calculatePoints(board, tile, 4, 3);
+
+        // Assert
+        assertEquals(1, points);
+    }
+
+    @Test
+    void shouldReturnTwoPointsWithThreeMatchingNeighbors() {
+        // Arrange
+        board.getSquare(4, 4).setTile(new Tile(Color.RED, Shape.BIRD));
+        board.getSquare(4, 2).setTile(new Tile(Color.RED, Shape.TURTLE));
+        board.getSquare(3, 3).setTile(new Tile(Color.RED, Shape.GECKO));
+        Tile tile = new Tile(Color.RED, Shape.FLOWER);
+
+        // Act
+        int points = referee.calculatePoints(board, tile, 4, 3);
+
+        // Assert
+        assertEquals(2, points);
+    }
+
+    @Test
+    void shouldAddTwoExtraPointsForSunSquare() {
+        // Arrange 
+        board.getSquare(1, 4).setTile(new Tile(Color.RED, Shape.BIRD));
+        Tile tile = new Tile(Color.RED, Shape.TURTLE);
+
+        // Act 
+        int points = referee.calculatePoints(board, tile, 0, 4);
+
+        // Assert
+        assertEquals(2, points);
+    }
+
+    @Test
+    void shouldReturnZeroPointsOnNormalSquareWithOneNeighbor() {
+        // Arrange
+        board.getSquare(4, 4).setTile(new Tile(Color.RED, Shape.BIRD));
+        Tile tile = new Tile(Color.RED, Shape.TURTLE);
+
+        // Act
+        int points = referee.calculatePoints(board, tile, 4, 3);
+
+        // Assert
+        assertEquals(0, points);
+    }
+
+
+    // --- isGameFinished ---
+
+    @Test
+    void shouldNotBeFinishedAtStart() {
+        // Assert
+        assertFalse(referee.isGameFinished(game));
+    }
+
+
+    // --- getResults ---
+
+    @Test
+    void shouldReturnFirstPlayerWinsWhenHigherScore() {
+        // Arrange
+        game.getPlayers()[0].addScore(10);
+
+        // Act & Assert
+        assertEquals("Alice wins!", referee.getResults(game));
+    }
+
+    @Test
+    void shouldReturnSecondPlayerWinsWhenHigherScore() {
+        // Arrange
+        game.getPlayers()[1].addScore(10);
+
+        // Act & Assert
+        assertEquals("Nolann wins!", referee.getResults(game));
+    }
+
+    @Test
+    void shouldReturnDrawWhenEqualScores() {
+        // Arrange 
+
+        // Act & Assert
+        assertEquals("Draw!", referee.getResults(game));
+    }
+
 }
