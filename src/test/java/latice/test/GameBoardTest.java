@@ -1,12 +1,17 @@
 package latice.test;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import latice.model.Color;
 import latice.model.GameBoard;
 import latice.model.Position;
+import latice.model.Shape;
 import latice.model.Square;
 import latice.model.SquareType;
+import latice.model.Tile;
 
 class GameBoardTest {
 
@@ -138,5 +143,30 @@ class GameBoardTest {
         // Assert
         assertEquals(SquareType.MOON, board.getSquare(4, 4).getType());
     }
+    
+ // --- placing tiles ---
 
+    @Test
+    void shouldMarkSquareAsOccupiedAfterTilePlaced() {
+        // Arrange
+        Tile tile = new Tile(Color.RED, Shape.BIRD);
+
+        // Act
+        board.getSquare(4, 4).setTile(tile);
+
+        // Assert
+        assertTrue(board.getSquare(4, 4).isOccupied());
+    }
+
+    @Test
+    void shouldReturnCorrectTileAfterPlacement() {
+        // Arrange
+        Tile tile = new Tile(Color.NAVY, Shape.TURTLE);
+
+        // Act
+        board.getSquare(1, 1).setTile(tile);
+
+        // Assert
+        assertEquals(tile, board.getSquare(1, 1).getTile());
+    }
 }
