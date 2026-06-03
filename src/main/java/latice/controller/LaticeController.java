@@ -7,6 +7,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
@@ -245,10 +246,12 @@ public class LaticeController {
             content.putString(String.valueOf(tileIndex));
             dragboard.setContent(content);
 
-            Image drawView = tileView.getImage();
-            dragboard.setDragView(drawView);
-            dragboard.setDragViewOffsetX(drawView.getWidth() / 2);
-            dragboard.setDragViewOffsetY(drawView.getHeight() / 2);
+            WritableImage dragImage = tileView.snapshot(null, null);
+
+            dragboard.setDragView(dragImage);
+
+            dragboard.setDragViewOffsetX(TILE_SIZE / 2);
+            dragboard.setDragViewOffsetY(TILE_SIZE / 2);
 
             event.consume();
         });
