@@ -1,6 +1,5 @@
 package latice.controller;
 
-
 import javafx.animation.FadeTransition;
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
@@ -26,78 +25,73 @@ import latice.model.Tile;
 
 public class LaticeController {
 
+    private static final int TILE_SIZE = 80;
+    private static final int BOARD_SIZE = 9;
+    private static final int NO_ANIMATION = Integer.MAX_VALUE;
+
     @FXML
     private GridPane gridPane;
-    
+
     @FXML
     private HBox idRackBox;
 
     @FXML
     private Label idPlayer1Name;
-    
+
     @FXML
     private Label idPlayer1Score;
-    
+
     @FXML
     private Label idPlayer2Name;
-    
+
     @FXML
     private Label idPlayer2Score;
-    
+
     @FXML
     private Label idCurrentPlayer;
-    
+
     @FXML
     private Label idCycleCount;
-    
+
     @FXML
     private Label idMessage;
-       
+
     private GameBoard gameBoard;
     private Referee referee;
     private Game game;
     private boolean gameFinished = false;
-    
-    private static final int TILE_SIZE = 80;
 
     @FXML
     public void initialize() {
     }
-    
+
+    public void startGame(String player1Name, String player2Name) {
+        game = new Game(player1Name, player2Name);
+        game.setup();
+        game.chooseStartingPlayer();
+
+        gameBoard = game.getBoard();
+        referee = new Referee(gameBoard);
+
+        refreshGameView(NO_ANIMATION);
+    }
+
     @FXML
     private void handleEndTurn() {
         if (gameFinished) {
             return;
         }
 
-        game.getCurrentPlayer().setHasPlayedThisTurn(false);
-
-        game.nextPlayer();
-        updateCycleCount();
+        endCurrentTurn();
 
         if (referee.isGameFinished(game)) {
-            gameFinished = true;
-            showResults();
+            finishGame();
             return;
         }
 
-        Player newCurrentPlayer = game.getCurrentPlayer();
-
-        updateCurrentPlayer();
-        displayRack(newCurrentPlayer.getRack(), Integer.MAX_VALUE);
-        setImageView(gridPane, 9, 9);
-        updateScores();
-
-        int oldSize = newCurrentPlayer.getRack().size();
-
-        PauseTransition pause = new PauseTransition(Duration.millis(400));
-        pause.setOnFinished(event -> {
-            newCurrentPlayer.getPool().fillRack(newCurrentPlayer.getRack());
-            displayRack(newCurrentPlayer.getRack(), oldSize);
-        });
-        pause.play();
+        refreshGameViewWithDrawAnimation();
     }
-    
+
     @FXML
     private void handleBuyExtraAction() {
         if (gameFinished) {
@@ -121,7 +115,7 @@ public class LaticeController {
         updateScores();
         showMessage("Extra action bought.");
     }
-    
+
     @FXML
     private void handleExchangeRack() {
         if (gameFinished) {
@@ -132,101 +126,195 @@ public class LaticeController {
         Rack rack = currentPlayer.getRack();
         Pool pool = currentPlayer.getPool();
 
+        exchangeRack(rack, pool);
+
+        handleEndTurn();
+    }
+
+    private void endCurrentTurn() {
+        game.getCurrentPlayer().setHasPlayedThisTurn(false);
+
+        game.nextPlayer();
+        updateCycleCount();
+        
+        
+        idMessage.setText("");
+    }
+
+    private void finishGame() {
+        gameFinished = true;
+        showResults();
+    }
+
+    private void exchangeRack(Rack rack, Pool pool) {
         while (!rack.isEmpty()) {
             Tile tile = rack.getRack().get(0);
-
             rack.removeTile(tile);
             pool.addTile(tile);
         }
 
         pool.shuffle();
         pool.fillRack(rack);
-
-        handleEndTurn();
     }
-    
-    public void startGame(String player1Name, String player2Name) {
-        game = new Game(player1Name, player2Name);
-        game.setup();
-        game.chooseStartingPlayer();
 
-        gameBoard = game.getBoard();
-        referee = new Referee(gameBoard);
+    private void playTile(Tile tile, Rack rack, Square targetSquare, int col, int row) {
+        int points = referee.calculatePoints(gameBoard, tile, col, row);
 
-        setImageView(gridPane, 9, 9);
-        displayRack(game.getCurrentPlayer().getRack(), Integer.MAX_VALUE);
+        Player currentPlayer = game.getCurrentPlayer();
+
+        currentPlayer.addScore(points);
+        currentPlayer.addTilesPlayed();
+        currentPlayer.setHasPlayedThisTurn(true);
+
+        targetSquare.setTile(tile);
+        rack.removeTile(tile);
+
+        refreshGameView(NO_ANIMATION);
+    }
+
+    private void refreshGameView(int animatedFromIndex) {
         updateScores();
         updateCurrentPlayer();
         updateCycleCount();
+        displayRack(game.getCurrentPlayer().getRack(), animatedFromIndex);
+        displayBoard();
     }
-    
-    private void showResults() {
-    	Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
-    	alert.setTitle("Game Results");
-    	alert.setHeaderText(null);
+    private void refreshGameViewWithDrawAnimation() {
+        Player currentPlayer = game.getCurrentPlayer();
 
-    	alert.setContentText(referee.getResults(game));
+        updateCurrentPlayer();
+        updateScores();
+        updateCycleCount();
+        displayBoard();
 
-    	alert.showAndWait();
+        displayRack(currentPlayer.getRack(), NO_ANIMATION);
+
+        int oldRackSize = currentPlayer.getRack().size();
+
+        PauseTransition pause = new PauseTransition(Duration.millis(400));
+        pause.setOnFinished(event -> {
+            currentPlayer.getPool().fillRack(currentPlayer.getRack());
+            displayRack(currentPlayer.getRack(), oldRackSize);
+        });
+        pause.play();
     }
-    
-    private void showMessage(String message) {
-		idMessage.setText(message);
-	}
-    
-    
+
     private void displayRack(Rack rack, int animatedFromIndex) {
-        idRackBox.getChildren().clear(); // on vide d'abord au cas ou on raffraîchit
+        idRackBox.getChildren().clear();
 
         for (int i = 0; i < rack.getRack().size(); i++) {
-
             Tile tile = rack.getRack().get(i);
             int tileIndex = i;
 
-            ImageView tileView = new ImageView(getImageForTile(tile));
-            tileView.setFitWidth(TILE_SIZE);
-            tileView.setFitHeight(TILE_SIZE);
+            ImageView tileView = createTileView(tile);
 
             if (i >= animatedFromIndex) {
-                tileView.setOpacity(0);
-
-                FadeTransition fade = new FadeTransition(Duration.millis(250), tileView);
-                fade.setFromValue(0);
-                fade.setToValue(1);
-                fade.play();
+                playFadeAnimation(tileView);
             }
-            
-            tileView.setOnDragDetected(event -> {
-            	Dragboard dragboard = tileView.startDragAndDrop(TransferMode.ANY);
-            	
-            	ClipboardContent content = new ClipboardContent();
-            	content.putString(String.valueOf(tileIndex));
-            	dragboard.setContent(content);
-            	
-                
-                Image drawView = tileView.getImage();
-                dragboard.setDragView(drawView);
-                
-                dragboard.setDragViewOffsetX(drawView.getWidth() / 2);
-                dragboard.setDragViewOffsetY(drawView.getHeight() / 2);
-                
-            	
-            	event.consume();
-            });
+
+            addDragEvent(tileView, tileIndex);
+
             idRackBox.getChildren().add(tileView);
         }
     }
-    
-    //Retourne l'image de fond d'une case selon son type (SEA, SUN, MOON)
-    private Image getImageForSquare(Square square) {
-        return switch (square.getType()) {
-            case SUN  -> loadImage("/latice/assets/bg_sun.png");
-            case MOON -> loadImage("/latice/assets/bg_moon.png");
-            default   -> loadImage("/latice/assets/bg_sea.png");
-        };
+
+    private ImageView createTileView(Tile tile) {
+        ImageView tileView = new ImageView(getImageForTile(tile));
+
+        tileView.setFitWidth(TILE_SIZE);
+        tileView.setFitHeight(TILE_SIZE);
+
+        return tileView;
     }
-    
+
+    private void playFadeAnimation(ImageView tileView) {
+        tileView.setOpacity(0);
+
+        FadeTransition fade = new FadeTransition(Duration.millis(250), tileView);
+        fade.setFromValue(0);
+        fade.setToValue(1);
+        fade.play();
+    }
+
+    private void addDragEvent(ImageView tileView, int tileIndex) {
+        tileView.setOnDragDetected(event -> {
+            Dragboard dragboard = tileView.startDragAndDrop(TransferMode.ANY);
+
+            ClipboardContent content = new ClipboardContent();
+            content.putString(String.valueOf(tileIndex));
+            dragboard.setContent(content);
+
+            Image drawView = tileView.getImage();
+            dragboard.setDragView(drawView);
+            dragboard.setDragViewOffsetX(drawView.getWidth() / 2);
+            dragboard.setDragViewOffsetY(drawView.getHeight() / 2);
+
+            event.consume();
+        });
+    }
+
+    private void displayBoard() {
+        gridPane.getChildren().clear();
+
+        for (int row = 0; row < BOARD_SIZE; row++) {
+            for (int col = 0; col < BOARD_SIZE; col++) {
+                addSquareToBoard(col, row);
+            }
+        }
+    }
+
+    private void addSquareToBoard(int col, int row) {
+        Square square = gameBoard.getSquare(col, row);
+
+        ImageView squareView = new ImageView(getImageForSquare(square));
+        squareView.setFitWidth(TILE_SIZE);
+        squareView.setFitHeight(TILE_SIZE);
+
+        if (square.isOccupied()) {
+            squareView.setImage(getImageForTile(square.getTile()));
+        }
+
+        addDropEvents(squareView, col, row);
+
+        gridPane.add(squareView, col, row);
+    }
+
+    private void addDropEvents(ImageView squareView, int col, int row) {
+        squareView.setOnDragOver(event -> {
+            if (event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.ANY);
+            }
+
+            event.consume();
+        });
+
+        squareView.setOnDragDropped(event -> {
+            if (gameFinished) {
+                event.setDropCompleted(false);
+                event.consume();
+                return;
+            }
+
+            Dragboard dragboard = event.getDragboard();
+
+            if (dragboard.hasString()) {
+                int tileIndex = Integer.parseInt(dragboard.getString());
+
+                Rack currentRack = game.getCurrentPlayer().getRack();
+                Tile tile = currentRack.getRack().get(tileIndex);
+                Square targetSquare = gameBoard.getSquare(col, row);
+
+                if (referee.isValidMove(game, gameBoard, tile, col, row)) {
+                    playTile(tile, currentRack, targetSquare, col, row);
+                    event.setDropCompleted(true);
+                }
+            }
+
+            event.consume();
+        });
+    }
+
     private void updateScores() {
         Player[] players = game.getPlayers();
 
@@ -236,122 +324,58 @@ public class LaticeController {
         idPlayer2Name.setText(players[1].getName());
         idPlayer2Score.setText(String.valueOf(players[1].getScore()));
     }
-    
+
     private void updateCurrentPlayer() {
-        idCurrentPlayer.setText(
-            "Player : " + game.getCurrentPlayer().getName()
-        );
-        
-        idMessage.setText("");
+        idCurrentPlayer.setText("Player : " + game.getCurrentPlayer().getName());
     }
-    
+
     private void updateCycleCount() {
         idCycleCount.setText("Cycle Count : " + game.getCycleCount());
     }
-    
-    
 
-    private Image loadImage(String path) {
-        return new Image(getClass().getResource(path).toExternalForm());
+    private void showResults() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle("Game Results");
+        alert.setHeaderText(null);
+        alert.setContentText(referee.getResults(game));
+
+        alert.showAndWait();
     }
-    
+
+    private void showMessage(String message) {
+        idMessage.setText(message);
+    }
+
+    private Image getImageForSquare(Square square) {
+        return switch (square.getType()) {
+            case SUN -> loadImage("/latice/assets/bg_sun.png");
+            case MOON -> loadImage("/latice/assets/bg_moon.png");
+            default -> loadImage("/latice/assets/bg_sea.png");
+        };
+    }
+
     private Image getImageForTile(Tile tile) {
         String shapeName = tile.getShape().name().toLowerCase();
-        String colorLetter = getColorLetter(tile.getColor());      
+        String colorLetter = getColorLetter(tile.getColor());
+
         String path = "/latice/assets/" + shapeName + "_" + colorLetter + ".png";
+
         return loadImage(path);
     }
 
     private String getColorLetter(Color color) {
         return switch (color) {
-            case GREEN   -> "g";
+            case GREEN -> "g";
             case MAGENTA -> "m";
-            case NAVY    -> "n";
-            case RED     -> "r";
-            case TEAL    -> "t";
-            case YELLOW  -> "y";
+            case NAVY -> "n";
+            case RED -> "r";
+            case TEAL -> "t";
+            case YELLOW -> "y";
         };
     }
-    
-    private void setImageView(GridPane gridPane, int width, int height) {
-    	gridPane.getChildren().clear();
-    	
-        for (int row = 0; row < height; row++) {
-            for (int col = 0; col < width; col++) {
-            	
-            	int currentCol = col;
-            	int currentRow = row;
 
-                Square square = gameBoard.getSquare(col, row);
-
-                // Image de fond de la case (normal / soleil / lune)
-                ImageView bgView = new ImageView(getImageForSquare(square));
-                bgView.setFitWidth(TILE_SIZE);
-                bgView.setFitHeight(TILE_SIZE);
-                
-                bgView.setOnDragOver(event -> {
-                	if (event.getDragboard().hasString()) {
-						event.acceptTransferModes(TransferMode.ANY);
-					}
-                	
-                	event.consume();
-                	});
-
-                
-                bgView.setOnDragDropped(event -> {
-                	 if (gameFinished) {
-                	     event.setDropCompleted(false);
-                	     event.consume();
-                	     return;
-                	 }
-
-                	Dragboard dragboard = event.getDragboard();
-                	
-                	if (dragboard.hasString()) {
-                		
-                		int tileIndex = Integer.parseInt(dragboard.getString());
-                		
-                		Rack currentRack = game.getCurrentPlayer().getRack();
-                		Tile tile = currentRack.getRack().get(tileIndex);
-                		Square targetSquare = gameBoard.getSquare(currentCol, currentRow);
-                		
-                		if (referee.isValidMove(game, gameBoard, tile, currentCol, currentRow)) {
-
-                		    int points = referee.calculatePoints(
-                		                    gameBoard,
-                		                    tile,
-                		                    currentCol,
-                		                    currentRow
-                		            );
-                		    
-                		    game.getCurrentPlayer().addScore(points);	
-                		    game.getCurrentPlayer().addTilesPlayed(); 
-                		    game.getCurrentPlayer().setHasPlayedThisTurn(true);
-                		    
-                		    targetSquare.setTile(tile);
-                		    currentRack.removeTile(tile);
-
-                		    updateScores();
-                		    displayRack(game.getCurrentPlayer().getRack(), Integer.MAX_VALUE);
-                		    setImageView(gridPane, width, height);
-
-                		    event.setDropCompleted(true);
-                		}
-						
-                	}
-                	
-                	event.consume();
-                });
-                
-
-                // Si la case contient une tuile, on superpose son image
-                if (square.isOccupied()) {
-                    bgView.setImage(getImageForTile(square.getTile()));
-                }
-
-                gridPane.add(bgView, col, row);
-            }
-        }
-
+    private Image loadImage(String path) {
+        return new Image(getClass().getResource(path).toExternalForm());
     }
 }
