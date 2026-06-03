@@ -1,134 +1,92 @@
 package latice.model;
 
 public class Referee {
-	
-	private static final int MAX_CYCLES = 10;
-	
-	private int cycleCount;
-	private GameBoard gameBoard;
-	
-	public Referee(GameBoard gameBoard) {
-		this.gameBoard = gameBoard;
-		this.cycleCount = 0;
-	}
 
-	public int getCycleCount() {
-		return cycleCount;
-	}
+    private static final int MAX_CYCLES = 10;
 
-	public void setCycleCount(int cycleCount) {
-		this.cycleCount = cycleCount;
-	}
+    private GameBoard gameBoard;
 
-	public GameBoard getGameBoard() {
-		return gameBoard;
-	}
-	
-	public boolean isValidMove(Game game, 
-								GameBoard board,
-								Tile tile,
-								int col,
-								int row) {
-		
-		Square square = board.getSquare(col, row);
-		
-	    if (game.getCurrentPlayer().hasPlayedThisTurn()) {
-	        return false;
-	    }
-		
-		// case déjà occupée
-		if (square.isOccupied()) {
-		return false;
-		}
-		
-		//premiere tuile sur une lune 
-		if (board.isEmpty() && square.getType() != SquareType.MOON) {
-			return false;
-			
-		}
+    public Referee(GameBoard gameBoard) {
+        this.gameBoard = gameBoard;
+    }
 
-		if (!board.isEmpty() && !board.allNeighborsMatch(square, tile))
-			return false;
+    public GameBoard getGameBoard() {
+        return gameBoard;
+    }
 
-		return true;
-		}
-	
-	public int calculatePoints(GameBoard board, Tile tile, int col, int row) {
-	    Square square = board.getSquare(col, row);
+    public boolean isValidMove(Game game, GameBoard board, Tile tile, int col, int row) {
+        Square square = board.getSquare(col, row);
 
-	    int matches = board.countMatchingNeighbors(square, tile);
-	    int points = 0;
+        return !hasPlayerAlreadyPlayed(game)
+                && !isSquareOccupied(square)
+                && isFirstMoveOnMoon(board, square)
+                && hasValidNeighbors(board, square, tile);
+    }
 
-	    if (matches == 1) {
-	        points = 0; // pas de point avec un seul voisin
-	    }else if (matches == 2) {
-	        points += 1;
-	    } else if (matches == 3) {
-	        points += 2;
-	    } else if (matches == 4) {
-	        points += 4;
-	    }
+    public int calculatePoints(GameBoard board, Tile tile, int col, int row) {
+        return calculateMatchPoints(board, tile, col, row)
+                + calculateSunPoints(board, col, row);
+    }
 
-	    if (square.getType() == SquareType.SUN) {
-	        points += 2;
-	    }
+    public int calculateMatchPoints(GameBoard board, Tile tile, int col, int row) {
+        Square square = board.getSquare(col, row);
+        int matches = board.countMatchingNeighbors(square, tile);
 
-	    return points;
-	}
-	
-	public int calculateMatchPoints(GameBoard board, Tile tile, int col, int row) {
-	    Square square = board.getSquare(col, row);
+        return switch (matches) {
+            case 2 -> 1;
+            case 3 -> 2;
+            case 4 -> 4;
+            default -> 0;
+        };
+    }
 
-	    int matches = board.countMatchingNeighbors(square, tile);
+    public int calculateSunPoints(GameBoard board, int col, int row) {
+        Square square = board.getSquare(col, row);
 
-	    if (matches == 2) {
-	        return 1;
-	    }
+        if (square.getType() == SquareType.SUN) {
+            return 2;
+        }
 
-	    if (matches == 3) {
-	        return 2;
-	    }
+        return 0;
+    }
 
-	    if (matches == 4) {
-	        return 4;
-	    }
+    public boolean isGameFinished(Game game) {
+        return game.getCycleCount() >= MAX_CYCLES
+                || hasEmptyRackAndPool(game.getPlayers()[0])
+                || hasEmptyRackAndPool(game.getPlayers()[1]);
+    }
 
-	    return 0;
-	}
-	
-	public int calculateSunPoints(GameBoard board, int col, int row) {
-	    Square square = board.getSquare(col, row);
+    public String getResults(Game game) {
+        Player[] players = game.getPlayers();
 
-	    if (square.getType() == SquareType.SUN) {
-	        return 2;
-	    }
+        if (players[0].getTilesPlayed() > players[1].getTilesPlayed()) {
+            return players[0].getName() + " wins!";
+        }
 
-	    return 0;
-	}
+        if (players[1].getTilesPlayed() > players[0].getTilesPlayed()) {
+            return players[1].getName() + " wins!";
+        }
 
-	public boolean isGameFinished(Game game) {
-		return game.getCycleCount() >= MAX_CYCLES
-		        || hasEmptyRackAndPool(game.getPlayers()[0])
-		        || hasEmptyRackAndPool(game.getPlayers()[1]);
-	}
-	
-	private boolean hasEmptyRackAndPool(Player player) {
-	    return player.getRack().isEmpty() && player.getPool().isEmpty();
-	}
+        return "Draw!";
+    }
 
-	public String getResults(Game game) {
+    private boolean hasPlayerAlreadyPlayed(Game game) {
+        return game.getCurrentPlayer().hasPlayedThisTurn();
+    }
 
-	    Player[] players = game.getPlayers();
+    private boolean isSquareOccupied(Square square) {
+        return square.isOccupied();
+    }
 
-	    if (players[0].getTilesPlayed() > players[1].getTilesPlayed()) {
-	        return players[0].getName() + " wins!";
-	    }
+    private boolean isFirstMoveOnMoon(GameBoard board, Square square) {
+        return !board.isEmpty() || square.getType() == SquareType.MOON;
+    }
 
-	    if (players[1].getTilesPlayed() > players[0].getTilesPlayed()) {
-	        return players[1].getName() + " wins!";
-	    }
+    private boolean hasValidNeighbors(GameBoard board, Square square, Tile tile) {
+        return board.isEmpty() || board.allNeighborsMatch(square, tile);
+    }
 
-	    return "Draw!";
-	}
-	
+    private boolean hasEmptyRackAndPool(Player player) {
+        return player.getRack().isEmpty() && player.getPool().isEmpty();
+    }
 }
