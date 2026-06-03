@@ -7,10 +7,11 @@ public class Player {
 	private Rack rack;
 	private int score;
 	private int tilesPlayed;
+	private boolean hasPlayedThisTurn = false;
 
-	public Player(String name, Pool pool) {
+
+	public Player(String name) {
 		this.name = name;
-		this.pool = pool;
 		this.rack = new Rack();
 		this.score = 0;
 		this.tilesPlayed = 0;
@@ -36,6 +37,10 @@ public class Player {
 		return pool;
 	}
 	
+	public void setPool(Pool pool) {
+		this.pool = pool;
+	}
+	
 	public int getTilesPlayed() {
 		return tilesPlayed;
 	}
@@ -44,9 +49,26 @@ public class Player {
 		this.tilesPlayed++;
 	}
 	
+	public boolean hasPlayedThisTurn() {
+	    return hasPlayedThisTurn;
+	}
+
+	public void setHasPlayedThisTurn(boolean value) {
+	    this.hasPlayedThisTurn = value;
+	}
+	
 	@Override
 	public String toString() {
 		return "Player{name='" + name + "', score=" + score + ", tilesPlayed=" + tilesPlayed + "}";
+	}
+	
+	public boolean spendPoints(int points) {
+	    if (score < points) {
+	        return false;
+	    }
+
+	    score -= points;
+	    return true;
 	}
 
 }
