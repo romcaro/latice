@@ -26,6 +26,8 @@ public class GameBoardFX extends Application {
 	    primaryStage.setTitle("Latice");
 	    primaryStage.setScene(scene);
 	    primaryStage.setResizable(false);
+	    primaryStage.sizeToScene();
+	    primaryStage.centerOnScreen();
 	    primaryStage.show();
 	}
 }

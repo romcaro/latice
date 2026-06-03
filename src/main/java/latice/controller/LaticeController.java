@@ -1,5 +1,6 @@
 package latice.controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +10,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
-import javafx.scene.control.Alert;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,6 +20,8 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import latice.model.Color;
 import latice.model.Game;
@@ -63,6 +66,33 @@ public class LaticeController {
 
     @FXML
     private Label idMessage;
+    
+    @FXML 
+    private VBox idRulesPane;
+    
+    @FXML
+    private VBox idEndGamePane;
+    
+    @FXML
+    private Label idWinnerTitle;
+    
+    @FXML
+    private Label idEndP1Name;
+    
+    @FXML
+    private Label idEndP1Score;
+    
+    @FXML
+    private Label idEndP1Tiles;
+    
+    @FXML
+    private Label idEndP2Name;
+    
+    @FXML
+    private Label idEndP2Score;
+    
+    @FXML
+    private Label idEndP2Tiles;
 
     private GameBoard gameBoard;
     private Referee referee;
@@ -146,12 +176,58 @@ public class LaticeController {
         updateCycleCount();
         
         
-        idMessage.setText("");
+        showMessage("");
     }
 
     private void finishGame() {
         gameFinished = true;
-        showResults();
+        
+        Player[] players = game.getPlayers();
+        Player p1 = players[0];
+        Player p2 = players[1];
+
+        if (p1.getTilesPlayed() > p2.getTilesPlayed()) {
+            idWinnerTitle.setText("PLAYER " + p1.getName().toUpperCase() + " WIN !");
+        } else if (p2.getTilesPlayed() > p1.getTilesPlayed()) {
+            idWinnerTitle.setText("PLAYER " + p2.getName().toUpperCase() + " WIN !");
+        } else {
+            idWinnerTitle.setText("DRAW !");
+        }
+
+        idEndP1Name.setText(p1.getName());
+        idEndP1Score.setText(p1.getScore() + " PTS");
+        idEndP1Tiles.setText("Tiles played : " + p1.getTilesPlayed());
+
+        idEndP2Name.setText(p2.getName());
+        idEndP2Score.setText(p2.getScore() + " PTS");
+        idEndP2Tiles.setText("Tiles played : " + p2.getTilesPlayed());
+
+        idEndGamePane.setVisible(true);
+    }
+
+    @FXML
+    private void handleRestartGame() {
+        idEndGamePane.setVisible(false);
+        gameFinished = false;
+        
+        Player[] players = game.getPlayers();
+        startGame(players[0].getName(), players[1].getName());
+    }
+
+    @FXML
+    private void handleReturnToMenu() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/latice/view/StartMenu.fxml"));
+            javafx.scene.Parent root = loader.load();
+            
+            Stage stage = (Stage) idWinnerTitle.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.sizeToScene();
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showMessage("Error during ruturn to menu.");
+        }
     }
 
     private void exchangeRack(Rack rack, Pool pool) {
@@ -383,25 +459,22 @@ public class LaticeController {
     }
 
     private void updateCurrentPlayer() {
-        idCurrentPlayer.setText("Player : " + game.getCurrentPlayer().getName());
+        idCurrentPlayer.setText("Player turn : " + game.getCurrentPlayer().getName());
     }
 
     private void updateCycleCount() {
         idCycleCount.setText("Cycle Count : " + game.getCycleCount());
     }
 
-    private void showResults() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-
-        alert.setTitle("Game Results");
-        alert.setHeaderText(null);
-        alert.setContentText(referee.getResults(game));
-
-        alert.showAndWait();
-    }
 
     private void showMessage(String message) {
         idMessage.setText(message);
+        
+        if (message == null || message.isBlank()) {
+            idMessage.setVisible(false);
+        } else {
+            idMessage.setVisible(true);
+        }
     }
 
     private Image getImageForSquare(Square square) {
@@ -445,5 +518,15 @@ public class LaticeController {
         }
 
         return imageCache.get(path);
+    }
+    
+    @FXML
+    private void handleReturnToRules() {
+        idRulesPane.setVisible(true);
+    }
+    
+    @FXML
+    private void handleCloseRulesInGame() {
+        idRulesPane.setVisible(false);
     }
 }

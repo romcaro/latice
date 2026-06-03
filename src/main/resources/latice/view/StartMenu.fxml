@@ -4,39 +4,57 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER"
-      spacing="20.0"
-      xmlns="http://javafx.com/javafx/25"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="latice.controller.StartMenuController">
+<StackPane xmlns="http://javafx.com/javafx/25" 
+           xmlns:fx="http://javafx.com/fxml/1" 
+           fx:controller="latice.controller.StartMenuController"
+           stylesheets="@style.css"
+           styleClass="start-menu-bg"
+           prefWidth="1220.0" 
+           prefHeight="831.0">
 
-    <padding>
-        <Insets top="30.0" right="30.0" bottom="30.0" left="30.0"/>
-    </padding>
+	<VBox fx:id="idMainForm" alignment="CENTER">
+      
+      <VBox alignment="CENTER" spacing="18.0" styleClass="menu-card" maxWidth="450.0">
+         <padding>
+            <Insets top="35.0" right="40.0" bottom="35.0" left="40.0"/>
+         </padding>
+         <children>
+            <Label text="LATICE" styleClass="main-title" />
 
-    <Label text="LATICE"
-           style="-fx-font-size: 40px; -fx-font-weight: bold;" />
+            <Label text="Player 1's Name" styleClass="menu-label" />
+            <TextField fx:id="idPlayer1Field" promptText="Player 1" maxWidth="250.0" styleClass="menu-input" />
 
-    <Label text="Player 1's Name" />
+            <Label text="Player 2's Name" styleClass="menu-label" />
+            <TextField fx:id="idPlayer2Field" promptText="Player 2" maxWidth="250.0" styleClass="menu-input" />
 
-    <TextField fx:id="idPlayer1Field"
-               promptText="Player 1"
-               maxWidth="250.0" />
+            <Button text="Start Game" onAction="#handleStartGame" prefWidth="200.0" styleClass="button" />
+            <Button text="Rules" onAction="#handleRules" prefWidth="200.0" styleClass="button" />
+            <Button text="Quit" onAction="#handleQuit" prefWidth="200.0" styleClass="button, button-action" />
+         </children>
+      </VBox>
+      
+   </VBox>
 
-    <Label text="Player 2's Name" />
+   <VBox fx:id="idRulesPane" alignment="CENTER" spacing="20.0" styleClass="rules-overlay" visible="false" maxWidth="600.0" maxHeight="550.0">
+      <padding>
+         <Insets top="25.0" right="30.0" bottom="25.0" left="30.0"/>
+      </padding>
+      
+      <Label text="LATICE RULES" styleClass="rules-title" />
+      
+      <VBox spacing="10.0" alignment="TOP_LEFT">
+         <Label text="• Each player has a rack containing 5 tiles." styleClass="rules-text" wrapText="true" />
+         <Label text="• The first tile must be placed on the Moon square." styleClass="rules-text" wrapText="true" />
+         <Label text="• Every new tile must be placed adjacent to at least one tile already on the board." styleClass="rules-text" wrapText="true" />
+         <Label text="• An adjacent tile must share either its color or its shape with neighboring tiles." styleClass="rules-text" wrapText="true" />
+         <Label text="• A tile adjacent to 2 valid neighboring tiles earns 1 point." styleClass="rules-text" wrapText="true" />
+         <Label text="• A tile adjacent to 3 valid neighboring tiles earns 2 points." styleClass="rules-text" wrapText="true" />
+      </VBox>
+      
+      <Button text="Close" onAction="#handleCloseRules" prefWidth="150.0" styleClass="button-action" />
+   </VBox>
 
-    <TextField fx:id="idPlayer2Field"
-               promptText="Player 2"
-               maxWidth="250.0" />
-
-    <Button text="Start Game"
-            onAction="#handleStartGame"
-            prefWidth="200.0" />
-
-    <Button text="Rules"
-            onAction="#handleRules"
-            prefWidth="200.0" />
-
-</VBox>
+</StackPane>

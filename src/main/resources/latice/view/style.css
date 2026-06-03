@@ -1,0 +1,237 @@
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", "-apple-system", "Helvetica Neue", sans-serif;
+}
+
+.start-menu-bg {
+    -fx-background-image: url("/latice/assets/bg_start_menu.png"); 
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+.main-title {
+    -fx-font-size: 45px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 15, 0.0, 0, 4);
+}
+
+.game-bg {
+    -fx-background-image: url("/latice/assets/bg_game.png"); 
+    -fx-background-size: cover;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+}
+
+.score-pane, .info-pane {
+    -fx-background-color: 
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.0) 50%),
+        rgba(25, 30, 45, 0.55);
+    -fx-background-radius: 24;
+    -fx-border-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.1));
+    -fx-border-radius: 24;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.35), 15, 0.0, 0, 8);
+}
+
+.score-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: rgba(255, 255, 255, 0.6);
+    -fx-letter-spacing: 1.5px;
+}
+
+.score-header {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(255, 255, 255, 0.4);
+}
+
+.player-name {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+}
+
+.player-score {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00f2fe;
+}
+
+.current-player-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #34c759;
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 199, 89, 0.2), 5, 0, 0, 0);
+}
+
+.cycle-count-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e0e0e0;
+}
+
+.button {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #007aff 0%, #0056b3 100%);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 40;
+    -fx-padding: 10 24 12 24;
+    -fx-cursor: hand;
+    -fx-border-color: rgba(255, 255, 255, 0.25);
+    -fx-border-radius: 40;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 122, 255, 0.3), 8, 0.0, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #1fa0ff 0%, #0066d6 100%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 122, 255, 0.5), 12, 0.0, 0, 4);
+}
+
+.button:armed {
+    -fx-scale-x: 0.96;
+    -fx-scale-y: 0.96;
+}
+
+/* --- BOUTON ROUGE "End Turn" --- */
+.button-action {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #ff3b30 0%, #c61a09 100%) !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 59, 48, 0.3), 8, 0.0, 0, 3) !important;
+}
+
+.button-action:hover {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #ff453a 0%, #e0241b 100%) !important;
+}
+
+/* --- BOUTON VERT "Rejouer" --- */
+.button-restart {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 0.1) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #34c759 0%, #248a3d 100%) !important;
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 199, 89, 0.3), 8, 0.0, 0, 3) !important;
+}
+
+.button-restart:hover {
+    -fx-background-color: 
+        linear-gradient(to top, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0.2) 45%, rgba(255, 255, 255, 0) 50%),
+        linear-gradient(to bottom, #4cd964 0%, #2cc04c 100%) !important;
+}
+
+.game-message-box {
+    -fx-background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 0%, rgba(255, 255, 255, 0) 50%), rgba(255, 59, 48, 0.15);
+    -fx-text-fill: #ff3b30;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 14;
+    -fx-border-color: linear-gradient(to bottom, rgba(255, 59, 48, 0.6), rgba(255, 59, 48, 0.2));
+    -fx-border-radius: 14;
+    -fx-border-width: 1.5;
+    -fx-padding: 10 16 10 16;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 59, 48, 0.15), 10, 0, 0, 2);
+}
+
+.rules-overlay {
+    -fx-background-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.0) 40%), rgba(15, 20, 35, 0.85);
+    -fx-background-radius: 28;
+    -fx-border-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+    -fx-border-radius: 28;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 30, 0.0, 0, 15);
+}
+
+.rules-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #00f2fe;
+    -fx-letter-spacing: 2px;
+}
+
+.rules-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 2 0 2 0;
+}
+
+.menu-label {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: rgba(255, 255, 255, 0.8);
+}
+
+.menu-input {
+    -fx-background-color: rgba(255, 255, 255, 0.15);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-radius: 10;
+}
+
+.menu-input:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-border-color: #007aff;
+}
+
+.end-game-pane {
+    -fx-background-color: #131826;
+    -fx-background-radius: 0;
+}
+
+.end-game-winner-title {
+    -fx-font-size: 38px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #ffcc00;
+    -fx-effect: dropshadow(three-pass-box, rgba(255, 204, 0, 0.3), 12, 0, 0, 4);
+}
+
+.end-game-stats-box {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 18;
+    -fx-padding: 30;
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-radius: 18;
+}
+
+.menu-card {
+    -fx-background-color: 
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.0) 40%),
+        rgba(15, 20, 35, 0.65);
+    
+    -fx-background-radius: 24;
+    
+    -fx-border-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.08));
+    -fx-border-radius: 24;
+    -fx-border-width: 1.5;
+    
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 20, 0.0, 0, 10);
+}
+
+.glass-pane {
+    -fx-background-color: 
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.0) 40%),
+        rgba(15, 20, 35, 0.65);
+    
+    -fx-background-radius: 22;
+    -fx-border-color: linear-gradient(to bottom, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.08));
+    -fx-border-radius: 22;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 15, 0.0, 0, 8);
+}
