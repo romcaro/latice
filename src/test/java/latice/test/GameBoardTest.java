@@ -68,4 +68,75 @@ class GameBoardTest {
         assertEquals(SquareType.SUN, board.getSquare(2, 2).getType());
     }
 
+    // --- default square state ---
+
+    @Test
+    void shouldBeNormalTypeByDefault() {
+        // Assert — every square is NORMAL before initSpecialSquares is called
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                assertEquals(SquareType.NORMAL, board.getSquare(x, y).getType());
+            }
+        }
+    }
+
+    @Test
+    void shouldNotBeOccupiedOnEmptyBoard() {
+        // Assert
+        for (int x = 0; x < WIDTH; x++) {
+            for (int y = 0; y < HEIGHT; y++) {
+                assertFalse(board.getSquare(x, y).isOccupied());
+            }
+        }
+    }
+
+    // --- initSpecialSquares ---
+
+    @Test
+    void shouldHaveAtLeastOneSunSquareAfterInit() {
+        // Arrange
+        board.initSpecialSquares();
+
+        // Act
+        boolean foundSun = false;
+        for (int x = 0; x < WIDTH && !foundSun; x++) {
+            for (int y = 0; y < HEIGHT && !foundSun; y++) {
+                if (board.getSquare(x, y).getType() == SquareType.SUN) {
+                    foundSun = true;
+                }
+            }
+        }
+
+        // Assert
+        assertTrue(foundSun);
+    }
+
+    @Test
+    void shouldHaveAtLeastOneMoonSquareAfterInit() {
+        // Arrange
+        board.initSpecialSquares();
+
+        // Act
+        boolean foundMoon = false;
+        for (int x = 0; x < WIDTH && !foundMoon; x++) {
+            for (int y = 0; y < HEIGHT && !foundMoon; y++) {
+                if (board.getSquare(x, y).getType() == SquareType.MOON) {
+                    foundMoon = true;
+                }
+            }
+        }
+
+        // Assert
+        assertTrue(foundMoon);
+    }
+
+    @Test
+    void shouldHaveMoonAtCenterAfterInit() {
+        // Arrange
+        board.initSpecialSquares();
+
+        // Assert
+        assertEquals(SquareType.MOON, board.getSquare(4, 4).getType());
+    }
+
 }
