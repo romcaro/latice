@@ -42,6 +42,9 @@ public class StartMenuController {
 	    Stage stage = (Stage) idPlayer1Field.getScene().getWindow();
 
 	    stage.setScene(new Scene(root));
+	    
+	    stage.sizeToScene();
+	    stage.centerOnScreen();
 	}
 	
 	@FXML
