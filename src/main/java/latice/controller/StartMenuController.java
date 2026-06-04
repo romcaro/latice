@@ -8,11 +8,15 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 
 public class StartMenuController {
 	
-	@FXML
+    private static MediaPlayer backgroundMusic;
+    
+   	@FXML
 	private TextField idPlayer1Field;
 
 	@FXML
@@ -25,7 +29,22 @@ public class StartMenuController {
 	private VBox idRulesPane;
 	
 	@FXML
+	public void initialize() {
+        String path = getClass()
+                .getResource("/latice/soundFX/backgroundSound.mp3")
+                .toExternalForm();
+
+            Media media = new Media(path);
+            backgroundMusic = new MediaPlayer(media);
+
+            backgroundMusic.setVolume(0.50);
+            backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);
+            backgroundMusic.play();
+	}
+	
+	@FXML
 	private void handleStartGame() throws IOException {
+
 	    String player1Name = idPlayer1Field.getText();
 	    String player2Name = idPlayer2Field.getText();
 
@@ -39,7 +58,7 @@ public class StartMenuController {
 
 	    FXMLLoader loader =
 	            new FXMLLoader(getClass().getResource("/latice/view/LaticeApp.fxml"));
-
+	    
 	    Parent root = loader.load();
 
 	    LaticeController controller = loader.getController();
@@ -73,4 +92,5 @@ public class StartMenuController {
 	    javafx.application.Platform.exit();
 	    System.exit(0);
 	}
+	
 }

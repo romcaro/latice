@@ -124,8 +124,6 @@ public class LaticeController {
         correctMoveSound = loadSound("/latice/soundFX/correctMove.mp3");
         extraActionSound = loadSound("/latice/soundFX/buyAction.mp3");
 
-        startBackgroundMusic();
-
         refreshGameView(NO_ANIMATION);
     }
 
@@ -150,7 +148,7 @@ public class LaticeController {
         if (gameFinished) {
             return;
         }
-        incorrectMoveSound.setVolume(0.3);
+        incorrectMoveSound.setVolume(0.5);
 
         Player currentPlayer = game.getCurrentPlayer();
 
@@ -169,7 +167,7 @@ public class LaticeController {
         currentPlayer.setHasPlayedThisTurn(false);
 
         updateScores();
-        victorySound.setVolume(0.2);
+        extraActionSound.setVolume(0.2);
         playSound(extraActionSound);
         showMessage("Extra action bought.");
     }
@@ -179,14 +177,42 @@ public class LaticeController {
         if (gameFinished) {
             return;
         }
+        incorrectMoveSound.setVolume(0.5);
+        extraActionSound.setVolume(0.2);
 
         Player currentPlayer = game.getCurrentPlayer();
         Rack rack = currentPlayer.getRack();
         Pool pool = currentPlayer.getPool();
 
-        exchangeRack(rack, pool);
-
-        handleEndTurn();
+        if (currentPlayer.hasPlayedThisTurn()) {
+            if (!currentPlayer.spendPoints(2)) {
+                showMessage("You need 2 points to exchange your rack after playing a tile.");
+                playSound(incorrectMoveSound);
+                return;
+            }
+            
+            updateScores();
+            exchangeRack(rack, pool);
+            playSound(extraActionSound);
+            showMessage("Rack exchanged (Cost: 2 points).");
+            
+            currentPlayer.setHasPlayedThisTurn(true); 
+            refreshGameView(NO_ANIMATION);
+            
+            handleEndTurn();
+        } 
+        
+        else {
+            exchangeRack(rack, pool);
+            playSound(extraActionSound);
+            showMessage("Rack exchanged (Free action used).");
+            
+            currentPlayer.setHasPlayedThisTurn(true); 
+            
+            refreshGameView(NO_ANIMATION);
+            
+            handleEndTurn();
+        }
     }
 
     private void endCurrentTurn() {
@@ -231,6 +257,8 @@ public class LaticeController {
 
     @FXML
     private void handleRestartGame() {
+    	startBackgroundMusic();
+    	victorySound.stop();
         idEndGamePane.setVisible(false);
         gameFinished = false;
         
@@ -241,6 +269,9 @@ public class LaticeController {
     @FXML
     private void handleReturnToMenu() {
         try {
+    		startBackgroundMusic();
+    		
+        	victorySound.stop();
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/latice/view/StartMenu.fxml"));
             javafx.scene.Parent root = loader.load();
             
@@ -255,7 +286,7 @@ public class LaticeController {
     }
 
     private void exchangeRack(Rack rack, Pool pool) {
-        while (!rack.isEmpty()) {
+        while (!rack.getRack().isEmpty()) {
             Tile tile = rack.getRack().get(0);
             rack.removeTile(tile);
             pool.addTile(tile);
@@ -364,8 +395,8 @@ public class LaticeController {
 
             dragboard.setDragView(dragImage);
 
-            dragboard.setDragViewOffsetX(TILE_SIZE / 2);
-            dragboard.setDragViewOffsetY(TILE_SIZE / 2);
+            dragboard.setDragViewOffsetX(TILE_SIZE / 2); // milieu de la souris
+            dragboard.setDragViewOffsetY(TILE_SIZE / 2); // milieu de la souris
 
             event.consume();
         });
@@ -585,7 +616,6 @@ public class LaticeController {
             sound.play();
         }
     }
-    
     
     @FXML
     private void handleReturnToRules() {
