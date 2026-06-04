@@ -3,6 +3,7 @@ package latice.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Pool {
 	
@@ -37,6 +38,9 @@ public class Pool {
 	}
 	
 	public Tile draw() {
+		if (this.size() == 0) {
+			throw new NoSuchElementException("Pool is empty !");
+		}
 		return tiles.removeFirst();
 	}
 	
