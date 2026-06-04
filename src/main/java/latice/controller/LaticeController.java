@@ -32,6 +32,9 @@ import latice.model.Rack;
 import latice.model.Referee;
 import latice.model.Square;
 import latice.model.Tile;
+import javafx.scene.media.AudioClip;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 public class LaticeController {
 
@@ -39,6 +42,11 @@ public class LaticeController {
     private static final int BOARD_SIZE = 9;
     private static final int NO_ANIMATION = Integer.MAX_VALUE;
     private Map<String, Image> imageCache = new HashMap<>();
+    private AudioClip incorrectMoveSound;
+    private AudioClip victorySound;
+    private MediaPlayer backgroundMusic;
+    private AudioClip correctMoveSound;
+    private AudioClip extraActionSound;
 
     @FXML
     private GridPane gridPane;
@@ -110,6 +118,13 @@ public class LaticeController {
 
         gameBoard = game.getBoard();
         referee = new Referee(gameBoard);
+        
+        incorrectMoveSound = loadSound("/latice/soundFX/incorrectMove.mp3");
+        victorySound = loadSound("/latice/soundFX/victorySound.mp3");
+        correctMoveSound = loadSound("/latice/soundFX/correctMove.mp3");
+        extraActionSound = loadSound("/latice/soundFX/buyAction.mp3");
+
+        startBackgroundMusic();
 
         refreshGameView(NO_ANIMATION);
     }
@@ -135,22 +150,27 @@ public class LaticeController {
         if (gameFinished) {
             return;
         }
+        incorrectMoveSound.setVolume(0.3);
 
         Player currentPlayer = game.getCurrentPlayer();
 
         if (!currentPlayer.hasPlayedThisTurn()) {
             showMessage("You must play a tile before buying an extra action.");
+            playSound(incorrectMoveSound);
             return;
         }
 
         if (!currentPlayer.spendPoints(2)) {
             showMessage("You need 2 points to buy an extra action.");
+            playSound(incorrectMoveSound);
             return;
         }
 
         currentPlayer.setHasPlayedThisTurn(false);
 
         updateScores();
+        victorySound.setVolume(0.2);
+        playSound(extraActionSound);
         showMessage("Extra action bought.");
     }
 
@@ -181,6 +201,10 @@ public class LaticeController {
 
     private void finishGame() {
         gameFinished = true;
+
+        stopBackgroundMusic();
+        victorySound.setVolume(0.30);
+        playSound(victorySound);
         
         Player[] players = game.getPlayers();
         Player p1 = players[0];
@@ -399,8 +423,17 @@ public class LaticeController {
                 Square targetSquare = gameBoard.getSquare(col, row);
 
                 if (referee.isValidMove(game, gameBoard, tile, col, row)) {
+                	
+                	correctMoveSound.setVolume(0.3);
+                	playSound(correctMoveSound);
+
                     playTile(tile, currentRack, targetSquare, col, row);
                     event.setDropCompleted(true);
+
+                } else {
+
+                    playSound(incorrectMoveSound);
+                    showMessage("Invalid move.");
                 }
             }
 
@@ -519,6 +552,40 @@ public class LaticeController {
 
         return imageCache.get(path);
     }
+    
+    private AudioClip loadSound(String path) {
+        return new AudioClip(
+            getClass()
+                .getResource(path)
+                .toExternalForm()
+        );
+    }
+    
+    private void startBackgroundMusic() {
+        String path = getClass()
+            .getResource("/latice/soundFX/backgroundSound.mp3")
+            .toExternalForm();
+
+        Media media = new Media(path);
+        backgroundMusic = new MediaPlayer(media);
+
+        backgroundMusic.setVolume(0.50);
+        backgroundMusic.setCycleCount(MediaPlayer.INDEFINITE);
+        backgroundMusic.play();
+    }
+
+    private void stopBackgroundMusic() {
+        if (backgroundMusic != null) {
+            backgroundMusic.stop();
+        }
+    }
+
+    private void playSound(AudioClip sound) {
+        if (sound != null) {
+            sound.play();
+        }
+    }
+    
     
     @FXML
     private void handleReturnToRules() {
