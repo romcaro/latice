@@ -28,6 +28,12 @@ public class StartMenuController {
 	@FXML
 	private VBox idRulesPane;
 	
+	public static void stopMusic() {
+	    if (backgroundMusic != null) {
+	        backgroundMusic.stop();
+	    }
+	}
+	
 	@FXML
 	public void initialize() {
         String path = getClass()

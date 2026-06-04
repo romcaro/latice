@@ -2,6 +2,7 @@ package latice.controller;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javafx.animation.FadeTransition;
@@ -112,6 +113,9 @@ public class LaticeController {
     }
 
     public void startGame(String player1Name, String player2Name) {
+    	StartMenuController.stopMusic();
+    	startBackgroundMusic();
+    	
         game = new Game(player1Name, player2Name);
         game.setup();
         game.chooseStartingPlayer();
@@ -286,11 +290,13 @@ public class LaticeController {
     }
 
     private void exchangeRack(Rack rack, Pool pool) {
-        while (!rack.getRack().isEmpty()) {
-            Tile tile = rack.getRack().get(0);
-            rack.removeTile(tile);
-            pool.addTile(tile);
-        }
+    	List<Tile> tiles = rack.getRack();
+    	while (!tiles.isEmpty()) {
+    	    Tile tile = tiles.get(0);
+    	    rack.removeTile(tile);
+    	    pool.addTile(tile);
+    	    tiles = rack.getRack();
+    	}
 
         pool.shuffle();
         pool.fillRack(rack);
@@ -349,8 +355,9 @@ public class LaticeController {
     private void displayRack(Rack rack, int animatedFromIndex) {
         idRackBox.getChildren().clear();
 
-        for (int i = 0; i < rack.getRack().size(); i++) {
-            Tile tile = rack.getRack().get(i);
+        List<Tile> tiles = rack.getRack();
+        for (int i = 0; i < tiles.size(); i++) {
+            Tile tile = tiles.get(i);
             int tileIndex = i;
 
             ImageView tileView = createTileView(tile);
@@ -395,8 +402,8 @@ public class LaticeController {
 
             dragboard.setDragView(dragImage);
 
-            dragboard.setDragViewOffsetX(TILE_SIZE / 2); // milieu de la souris
-            dragboard.setDragViewOffsetY(TILE_SIZE / 2); // milieu de la souris
+            dragboard.setDragViewOffsetX(TILE_SIZE / 2); 
+            dragboard.setDragViewOffsetY(TILE_SIZE / 2);
 
             event.consume();
         });
